@@ -78,13 +78,13 @@ export default function AssignmentEditor() {
                 <input type="checkbox" name="check-online-options" id="wd-text-entry"/>
                 <label htmlFor="wd-text-entry">Text Entry</label><br/>
 
-                <input type="checkbox" name="check-online-options" id="wd-webiste-url"/>
+                <input type="checkbox" name="check-online-options" id="wd-website-url"/>
                 <label htmlFor="wd-website-url">Website URL</label><br/>
 
                 <input type="checkbox" name="check-online-options" id="wd-media-recordings"/>
                 <label htmlFor="wd-media-recordings">Media Recordings</label><br/>
 
-                <input type="checkbox" name="check-online-options" id="wd-student-annotaion"/>
+                <input type="checkbox" name="check-online-options" id="wd-student-annotation"/>
                 <label htmlFor="wd-student-annotation">Student Annotation</label><br/>
 
                 <input type="checkbox" name="check-online-options" id="wd-file-upload"/>
@@ -112,13 +112,13 @@ export default function AssignmentEditor() {
             <tr>
                 <td></td>
                 <td>
-                    <label>Due</label>
+                    <label htmlFor="wd-due-date">Due</label>
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td>
-                    <input type="date" id="wd-text-fields-dob" value="2024-05-13"/><br/>
+                    <input type="date" id="wd-due-date" value="2024-05-13"/><br/>
                 </td>
             </tr><br/>
 
@@ -127,19 +127,19 @@ export default function AssignmentEditor() {
             <tr>
                 <td></td>
                 <td>
-                    <label>Available from</label>
+                    <label htmlFor="wd-available-from">Available from</label>
                 </td>
                 <td>
-                    <label>Until</label>
+                    <label htmlFor="wd-available-until">Until</label>
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td>
-                    <input type="date" id="wd-text-fields-dob" value="2024-05-06"/>
+                    <input type="date" id="wd-available-from" value="2024-05-06"/>
                 </td>
                 <td>
-                    <input type="date" id="wd-text-fields-dob" value="2024-05-20"/><br/>
+                    <input type="date" id="wd-available-until" value="2024-05-20"/><br/>
                 </td>
             </tr>
 

@@ -8,7 +8,6 @@ function App() {
   return (
     <HashRouter>
       <div>
-        <h1> Deo Gracias Ong</h1>
         <li><Link to="/Kanbas">Kanbas</Link></li>
         <li><Link to="/Labs">Labs</Link></li>
         <Routes>

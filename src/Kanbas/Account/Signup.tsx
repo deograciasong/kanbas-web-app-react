@@ -4,10 +4,10 @@ export default function Signup () {
     return (
         <div id="wd-signup-screen">
             <h3> Sign Up</h3>
-            <input placeholder="username" /><br />
-            <input placeholder="password" type="password" /><br />
-            <input placeholder="verify password" type="password" /><br />
-            <Link to="/Kanbas/Account/Profile" >Sign up </Link><br />
+            <input placeholder="username" className="form-control" />
+            <input placeholder="password" type="password" className="form-control"/>
+            <input placeholder="verify password" className="form-control" type="password" />
+            <Link to="/Kanbas/Account/Profile" className="btn btn-primary w-100">Sign up </Link>
             <Link to="/Kanbas/Account/Signin" > Sign in </Link>
         </div>
     )

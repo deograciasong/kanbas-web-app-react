@@ -4,68 +4,134 @@ export default function Dashboard() {
         <div id="wd-dashboard">
             <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
             <h2 id="wd-dashboard-published">Published Courses (7)</h2> <hr />
-            <div id="wd-dashboard-courses">
+            <div id="wd-dashboard-courses" className="row">
                 <div className="wd-dashboard-course">
-                    <img src="/images/reactjs.ico" width={200} alt="react"/>
-                    <div>
-                        <Link className="wd-dashboard-course-link" 
-                        to="/Kanbas/Courses/1234/Home">CS1234 React JS</Link>
-                        <p className="wd-dashboard-course-title">Full Stack Software Developer</p>
-                        <Link to="/Kanbas/Courses/1234/Home"> Go </Link>
-                    </div>
-                </div>
-                <div className="wd-dashboard-course">
-                    <img src="/images/breathing.jpg" width={200} alt="breathe"/>
-                    <div>
-                        <Link className="wd-dashboard-course-link" 
-                        to="/Kanbas/Courses/4567/Home">CS4567 breathing</Link>
-                        <p className="wd-dashboard-course-title">Breathing Techniques</p>
-                        <Link to="/Kanbas/Courses/4567/Home"> Go </Link>
-                    </div>
-                </div>
-                <div className="wd-dashboard-course">
-                    <img src="/images/present.png" width={200} alt="present"/>
-                    <div>
-                        <Link className="wd-dashboard-course-link" 
-                        to="/Kanbas/Courses/1000/Home">CS1000 come to class</Link>
-                        <p className="wd-dashboard-course-title">Being Present</p>
-                        <Link to="/Kanbas/Courses/1000/Home"> Go </Link>
-                    </div>
-                </div>
-                <div className="wd-dashboard-course">
-                    <img src="/images/color.webp" width={200} alt="color"/>
-                    <div>
-                        <Link className="wd-dashboard-course-link" 
-                        to="/Kanbas/Courses/2000/Home">CS2000 art</Link>
-                        <p className="wd-dashboard-course-title">What is color</p>
-                        <Link to="/Kanbas/Courses/2000/Home"> Go </Link>
-                    </div>
-                </div>
-                <div className="wd-dashboard-course">
-                    <img src="/images/eating.jpg" width={200} alt="eating"/>
-                    <div>
-                        <Link className="wd-dashboard-course-link" 
-                        to="/Kanbas/Courses/3000/Home">CS3000 eating</Link>
-                        <p className="wd-dashboard-course-title">Pleasures of Life</p>
-                        <Link to="/Kanbas/Courses/3000/Home"> Go </Link>
-                    </div>
-                </div>
-                <div className="wd-dashboard-course">
-                    <img src="/images/sleeping.png" width={200} alt="sleeping"/>
-                    <div>
-                        <Link className="wd-dashboard-course-link" 
-                        to="/Kanbas/Courses/4000/Home">CS4000 Sleeping</Link>
-                        <p className="wd-dashboard-course-title">growing your mind</p>
-                        <Link to="/Kanbas/Courses/4000/Home"> Go </Link>
-                    </div>
-                </div>
-                <div className="wd-dashboard-course">
-                    <img src="/images/gym.jpg" width={200} alt="gym"/>
-                    <div>
-                        <Link className="wd-dashboard-course-link" 
-                        to="/Kanbas/Courses/5000/Home">CS5000 gym</Link>
-                        <p className="wd-dashboard-course-title">Macros</p>
-                        <Link to="/Kanbas/Courses/5000/Home"> Go </Link>
+                    <div className="row row-cols-1 row-cols-md-5 g-4">
+                        <div className="wd-dashboard-course col" style={{ width: "300px" }}>
+                            <div className="card rounded-3 overflow-hidden">
+                                <Link className="wd-dashboard-course-link text-decoration-none text-dark"
+                                    to="/Kanbas/Courses/1234/Home">
+                                <img src="/images/react.svg" width="100%" height={200}/>
+                                <div className="card-body">
+                                    <h5 className="wd-dashboard-course-title card-title">
+                                        CS1234 React JS
+                                    </h5>
+                                    <p className="wd-dashboard-course-title card-text">
+                                        Full Stack software developer
+                                    </p>
+                                    <button className="btn btn-primary"> Go </button>
+                                </div>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="wd-dashboard-course col" style={{ width: "300px" }}>
+                            <div className="card rounded-3 overflow-hidden">
+                                <Link className="wd-dashboard-course-link text-decoration-none text-dark"
+                                    to="/Kanbas/Courses/4567/Home">
+                                <img src="/images/breathing.jpg" width="100%" height={200}/>
+                                <div className="card-body">
+                                    <h5 className="wd-dashboard-course-title card-title">
+                                        CS4567 breathing
+                                    </h5>
+                                    <p className="wd-dashboard-course-title card-text">
+                                        Breathing Techniques
+                                    </p>
+                                    <button className="btn btn-primary"> Go </button>
+                                </div>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="wd-dashboard-course col" style={{ width: "300px" }}>
+                            <div className="card rounded-3 overflow-hidden">
+                                <Link className="wd-dashboard-course-link text-decoration-none text-dark"
+                                    to="/Kanbas/Courses/1000/Home">
+                                <img src="/images/present.png" width="100%" height={200}/>
+                                <div className="card-body">
+                                    <h5 className="wd-dashboard-course-title card-title">
+                                        CS1000 come to class
+                                    </h5>
+                                    <p className="wd-dashboard-course-title card-text">
+                                        Being Present
+                                    </p>
+                                    <button className="btn btn-primary"> Go </button>
+                                </div>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="wd-dashboard-course col" style={{ width: "300px" }}>
+                            <div className="card rounded-3 overflow-hidden">
+                                <Link className="wd-dashboard-course-link text-decoration-none text-dark"
+                                    to="/Kanbas/Courses/2000/Home">
+                                <img src="/images/color.png" width="100%" height={200}/>
+                                <div className="card-body">
+                                    <h5 className="wd-dashboard-course-title card-title">
+                                        CS2000 art
+                                    </h5>
+                                    <p className="wd-dashboard-course-title card-text">
+                                        what is color
+                                    </p>
+                                    <button className="btn btn-primary"> Go </button>
+                                </div>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="wd-dashboard-course col" style={{ width: "300px" }}>
+                            <div className="card rounded-3 overflow-hidden">
+                                <Link className="wd-dashboard-course-link text-decoration-none text-dark"
+                                    to="/Kanbas/Courses/3000/Home">
+                                <img src="/images/eating.jpg" width="100%" height={200}/>
+                                <div className="card-body">
+                                    <h5 className="wd-dashboard-course-title card-title">
+                                        CS3000 eating
+                                    </h5>
+                                    <p className="wd-dashboard-course-title card-text">
+                                        pleasures of life
+                                    </p>
+                                    <button className="btn btn-primary"> Go </button>
+                                </div>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="wd-dashboard-course col" style={{ width: "300px" }}>
+                            <div className="card rounded-3 overflow-hidden">
+                                <Link className="wd-dashboard-course-link text-decoration-none text-dark"
+                                    to="/Kanbas/Courses/3000/Home">
+                                <img src="/images/sleeping.png" width="100%" height={200}/>
+                                <div className="card-body">
+                                    <h5 className="wd-dashboard-course-title card-title">
+                                        CS3000 sleeping
+                                    </h5>
+                                    <p className="wd-dashboard-course-title card-text">
+                                        growing your mind
+                                    </p>
+                                    <button className="btn btn-primary"> Go </button>
+                                </div>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="wd-dashboard-course col" style={{ width: "300px" }}>
+                            <div className="card rounded-3 overflow-hidden">
+                                <Link className="wd-dashboard-course-link text-decoration-none text-dark"
+                                    to="/Kanbas/Courses/5000/Home">
+                                <img src="/images/gym.jpg" width="100%" height={200}/>
+                                <div className="card-body">
+                                    <h5 className="wd-dashboard-course-title card-title">
+                                        CS5000 gym
+                                    </h5>
+                                    <p className="wd-dashboard-course-title card-text">
+                                        macros
+                                    </p>
+                                    <button className="btn btn-primary"> Go </button>
+                                </div>
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

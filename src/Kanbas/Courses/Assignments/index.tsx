@@ -1,76 +1,187 @@
+import AssignmentControl from "./AssignmentControls";
+import { BsGripVertical } from "react-icons/bs";
+import AssignmentControlButtons from "./AssignmentControlButtons";
+import HomeworkControlButtons from "./HomeworkControlButtons";
+import { VscNotebook } from "react-icons/vsc";
+import { MdOutlineArrowDropDown } from "react-icons/md";
+
 export default function Assignments() {
     return (
       <div id="wd-assignments">
-        <input id="wd-search-assignment"
-               placeholder="Search for Assignments" />
-        <button id="wd-add-assignment-group">+ Group</button>
-        <button id="wd-add-assignment">+ Assignment</button>
-        <h3 id="wd-assignments-title">
-          ASSIGNMENTS 40% of Total <button>+</button>
-        </h3>
+        <AssignmentControl /><br /><br /><br /><br />
 
-        
-        <ul id="wd-assignment-list">
+        <ul id="wd-assignments-title" className="list-group rounded-0">
+          <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
+                <div className="wd-title p-3 ps-2 bg-secondary">
+                    <BsGripVertical className="me-1 fs-2" />
+                    <MdOutlineArrowDropDown className="me-1 fs-2" />
+                    ASSIGNMENTS
+                    <AssignmentControlButtons />
+                </div>
 
-            {/* Assignment 1 */}
-            <li className="wd-assignment-list-item">
-                <a className="wd-assignment-link"
-                href="#/Kanbas/Courses/1234/Assignments/123">
-                A1 - ENV + HTML
-                </a>
-                <p>Multiple Modules | <strong>Not available until Sept 5 at 12:00am</strong> | Due Sept 19 at 11:59pm | 100 pts</p>
+                {/* Assignment 1 */}
+                <ul className="wd-assignment-list list-group rounded-0">
+                    <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
+                        <div className="me-3 d-flex align-items-start">
+                            <BsGripVertical className="me-2 fs-3" />
+                            <VscNotebook className="me-2 fs-3" style={{ color: "green" }} />
+                        </div>
+                        <div style={{ flexGrow: 1 }}>
+                            <div style={{ fontSize: "19px" }}>
+                            <a className="wd-assignment-link" 
+                            href="#/Kanbas/Courses/1234/Assignments/123">
+                            A1
+                            </a>
+                            </div>
+                            <div style={{ fontSize: "14px" }}>
+                                <span style={{ color: "red" }}>Multiple Modules</span>
+                                <span> | <strong>Not available until</strong> Sept 5 at 12:00am |</span>
+                            </div>
+                            <div style={{ fontSize: "14px" }}>
+                                | <strong>Due</strong> Sept 19 at 11:59pm | 100 pts
+                            </div>
+                        </div>
+                        <div className="ms-auto">
+                            <HomeworkControlButtons />
+                        </div>
+                    </li>
+                </ul>
+
+                {/* Assignment 2 */}
+                <ul className="wd-assignment-list list-group rounded-0">
+                    <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
+                        <div className="me-3 d-flex align-items-start">
+                            <BsGripVertical className="me-2 fs-3" />
+                            <VscNotebook className="me-2 fs-3" style={{ color: "green" }} />
+                        </div>
+                        <div style={{ flexGrow: 1 }}>
+                            <div style={{ fontSize: "19px" }}>
+                            <a className="wd-assignment-link" 
+                            href="#/Kanbas/Courses/1234/Assignments/123">
+                            A2
+                            </a></div>
+                            <div style={{ fontSize: "14px" }}>
+                                <span style={{ color: "red" }}>Multiple Modules</span>
+                                <span> | <strong>Not available until</strong> Sept 19 at 12:00am |</span>
+                            </div>
+                            <div style={{ fontSize: "14px" }}>
+                                | <strong>Due</strong> Oct 3 at 11:59pm | 100 pts
+                            </div>
+                        </div>
+                        <div className="ms-auto">
+                            <HomeworkControlButtons />
+                        </div>
+                    </li>
+                </ul>
+
+                {/* Assignment 3 */}
+                <ul className="wd-assignment-list list-group rounded-0">
+                    <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
+                        <div className="me-3 d-flex align-items-start">
+                            <BsGripVertical className="me-2 fs-3" />
+                            <VscNotebook className="me-2 fs-3" style={{ color: "green" }} />
+                        </div>
+                        <div style={{ flexGrow: 1 }}>
+                            <div style={{ fontSize: "19px" }}>
+                                <a className="wd-assignment-link" 
+                                    href="#/Kanbas/Courses/1234/Assignments/123">
+                                    A3</a>
+                            </div>
+                            <div style={{ fontSize: "14px" }}>
+                                <span style={{ color: "red" }}>Multiple Modules</span>
+                                <span> | <strong>Not available until</strong> Oct 3 at 12:00am |</span>
+                            </div>
+                            <div style={{ fontSize: "14px" }}>
+                                | <strong>Due</strong> Oct 17 at 11:59pm | 100 pts
+                            </div>
+                        </div>
+                        <div className="ms-auto">
+                            <HomeworkControlButtons />
+                        </div>
+                    </li>
+                </ul>
+
+                {/* Assignment 4 */}
+                <ul className="wd-assignment-list list-group rounded-0">
+                    <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
+                        <div className="me-3 d-flex align-items-start">
+                            <BsGripVertical className="me-2 fs-3" />
+                            <VscNotebook className="me-2 fs-3" style={{ color: "green" }} />
+                        </div>
+                        <div style={{ flexGrow: 1 }}>
+                            <div style={{ fontSize: "19px" }}><a className="wd-assignment-link" 
+                            href="#/Kanbas/Courses/1234/Assignments/123">
+                            A4
+                            </a>
+                        </div>
+                            <div style={{ fontSize: "14px" }}>
+                                <span style={{ color: "red" }}>Multiple Modules</span>
+                                <span> | <strong>Not available until</strong> Oct 17 at 12:00am |</span>
+                            </div>
+                            <div style={{ fontSize: "14px" }}>
+                                | <strong>Due</strong> Oct 31 at 11:59pm | 100 pts
+                            </div>
+                        </div>
+                        <div className="ms-auto">
+                            <HomeworkControlButtons />
+                        </div>
+                    </li>
+                </ul>
+
+                {/* Assignment 5 */}
+                <ul className="wd-assignment-list list-group rounded-0">
+                    <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
+                        <div className="me-3 d-flex align-items-start">
+                            <BsGripVertical className="me-2 fs-3" />
+                            <VscNotebook className="me-2 fs-3" style={{ color: "green" }} />
+                        </div>
+                        <div style={{ flexGrow: 1 }}>
+                            <div style={{ fontSize: "19px" }}><a className="wd-assignment-link" 
+                            href="#/Kanbas/Courses/1234/Assignments/123">
+                            A5
+                            </a>
+                        </div>
+                            <div style={{ fontSize: "14px" }}>
+                                <span style={{ color: "red" }}>Multiple Modules</span>
+                                <span> | <strong>Not available until</strong> Oct 31 at 12:00am |</span>
+                            </div>
+                            <div style={{ fontSize: "14px" }}>
+                                | <strong>Due</strong> Nov 14 at 11:59pm | 100 pts
+                            </div>
+                        </div>
+                        <div className="ms-auto">
+                            <HomeworkControlButtons />
+                        </div>
+                    </li>
+                </ul>
+
+                {/* Assignment 6 */}
+                <ul className="wd-assignment-list list-group rounded-0">
+                    <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
+                        <div className="me-3 d-flex align-items-start">
+                            <BsGripVertical className="me-2 fs-3" />
+                            <VscNotebook className="me-2 fs-3" style={{ color: "green" }} />
+                        </div>
+                        <div style={{ flexGrow: 1 }}>
+                            <div style={{ fontSize: "19px" }}><a className="wd-assignment-link" 
+                            href="#/Kanbas/Courses/1234/Assignments/123">
+                            A6
+                            </a>
+                        </div>
+                            <div style={{ fontSize: "14px" }}>
+                                <span style={{ color: "red" }}>Multiple Modules</span>
+                                <span> | <strong>Not available until</strong> Nov 14 at 12:00am |</span>
+                            </div>
+                            <div style={{ fontSize: "14px" }}>
+                                | <strong>Due</strong> Nov 28 at 11:59pm | 100 pts
+                            </div>
+                        </div>
+                        <div className="ms-auto">
+                            <HomeworkControlButtons />
+                        </div>
+                    </li>
+                </ul>
             </li>
-          
-
-            {/* Assignment 2 */}
-            <li className="wd-assignment-list-item">
-                <a className="wd-assignment-link"
-                href="#/Kanbas/Courses/1234/Assignments/234">
-                A2 - CSS + BOOTSTRAP
-                </a>
-                <p>Multiple Modules | <strong>Not available until Sept 19 at 12:00am</strong> | Due Oct 3 at 11:59pm | 100 pts</p>
-            </li>
-
-
-            {/* Assignment 3 */}
-            <li className="wd-assignment-list-item">
-                <a className="wd-assignment-link"
-                href="#/Kanbas/Courses/1234/Assignments/345">
-                A3 - JAVASCRIPT + REACT
-                </a>
-                <p>Multiple Modules | <strong>Not available until Oct 3 at 12:00am</strong> | Due Oct 17 at 11:59pm | 100 pts</p>
-            </li>
-
-            {/* Assignment 4 */}
-            <li className="wd-assignment-list-item">
-                <a className="wd-assignment-link"
-                href="#/Kanbas/Courses/1234/Assignments/456">
-                A4 - STATE & REDUX
-                </a>
-                <p>Multiple Modules | <strong>Not available until Oct 17 at 12:00am</strong> | Due OCT 31 at 11:59pm | 100 pts</p>
-            </li>
-
-
-            {/* Assignment 5 */}
-            <li className="wd-assignment-list-item">
-                <a className="wd-assignment-link"
-                href="#/Kanbas/Courses/1234/Assignments/567">
-                A5 - NODE + SESSION
-                </a>
-                <p>Multiple Modules | <strong>Not available until Nov 1 at 12:00am</strong> | Due Nov 14 at 11:59pm | 100 pts</p>
-            </li>
-
-            
-            {/* Assignment 6 */}
-            <li className="wd-assignment-list-item">
-                <a className="wd-assignment-link"
-                href="#/Kanbas/Courses/1234/Assignments/678">
-                A6 - MONGODB + MONGOOSE
-                </a>
-                <p>Multiple Modules | <strong>Not available until Nov 14 at 12:00am</strong> | Due Nov 28 at 11:59pm | 100 pts</p>
-            </li>
-
-
         </ul>
       </div>
   );}

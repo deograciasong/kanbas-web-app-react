@@ -6,6 +6,8 @@ import TOC from "./TOC";
 export default function Labs() {
     return (
         <div id="wd-labs">
+            <h1>Deo Gracias Ong</h1>
+            <h3>Online - Thursday 7pm-10pm EST</h3>
             <h1>Labs</h1>
             <TOC />
             <Routes>

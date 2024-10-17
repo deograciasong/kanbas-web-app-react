@@ -17,15 +17,7 @@ export default function AssignmentEditor() {
 
                         <div className="form-control mb-3 justify-content-end align-items-center" style={{ height: "auto", padding: "15px", fontSize: "16px" }}>
                             The assignment is <span style={{ color: 'red' }}>available online</span>. <br /><br />
-                            Submit a link to the landing page of your Web application running on Netlify. <br /><br />
-                            The landing page should include the following:<br />
-                            <ul>
-                                <li>Your full name and section</li>
-                                <li>Links to each of the lab assignments</li>
-                                <li>Link to the Kanbas application</li>
-                                <li>Links to all relevant source code repositories</li>
-                            </ul>
-                            The Kanbas application should include a link to navigate back to the landing page.
+                            {assignment.description}<br /><br />
                         </div>
 
 

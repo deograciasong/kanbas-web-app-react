@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import React, { useState } from "react";
 import { addAbortSignal } from "stream";
 import { addAssignment, updateAssignment, deleteAssignment }
-  from "./reducer";
+    from "./reducer";
 
 
 export default function Assignments() {
@@ -23,7 +23,7 @@ export default function Assignments() {
         <div id="wd-assignments">
             {currentUser.role === "FACULTY" && (
                 <div>
-                     <AssignmentControl />
+                    <AssignmentControl />
                     <br /><br /><br /><br />
                 </div>)}
 
@@ -34,7 +34,7 @@ export default function Assignments() {
                         <MdOutlineArrowDropDown className="me-1 fs-2" />
                         ASSIGNMENTS
                         {currentUser.role === "FACULTY" && (
-                        <AssignmentControlButtons />)}
+                            <AssignmentControlButtons />)}
                     </div>
 
                     <ul className="wd-assignment-list list-group rounded-0">
@@ -62,7 +62,11 @@ export default function Assignments() {
                                         </div>
                                     </div>
                                     <div className="ms-auto">
-                                        <HomeworkControlButtons />
+                                        <HomeworkControlButtons assignmentId={assignment._id}
+                                        assignmentName={assignment.title}
+                                            deleteAssignment={() => {
+                                                dispatch(deleteAssignment(assignment._id));
+                                            }} />
                                     </div>
                                 </li>
                             ))}

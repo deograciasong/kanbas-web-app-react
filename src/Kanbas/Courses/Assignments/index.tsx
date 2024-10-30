@@ -6,17 +6,25 @@ import { VscNotebook } from "react-icons/vsc";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useParams } from "react-router";
 import * as db from "../../Database";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { addAbortSignal } from "stream";
+import { addAssignment, updateAssignment, deleteAssignment }
+  from "./reducer";
+
 
 export default function Assignments() {
     const { cid } = useParams();
-    const assignments = db.assignments;
+    const [assignmentName, setAssignmentName] = useState("");
     const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const { assignments } = useSelector((state: any) => state.assignmentReducer);
+    const dispatch = useDispatch();
     return (
         <div id="wd-assignments">
             {currentUser.role === "FACULTY" && (
                 <div>
-                    <AssignmentControl /><br /><br /><br /><br />
+                     <AssignmentControl />
+                    <br /><br /><br /><br />
                 </div>)}
 
             <ul id="wd-assignments-title" className="list-group rounded-0">

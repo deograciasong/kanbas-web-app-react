@@ -1,192 +1,161 @@
 import { FaChevronDown } from "react-icons/fa";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import * as db from "../../Database";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addAssignment, updateAssignment } from "./reducer"; 
+
 export default function AssignmentEditor() {
     const { cid, aid } = useParams();
-    const assignments = db.assignments;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const isEditing = !!db.assignments.find((a) => a._id === aid);
+
+    const initialAssignment = db.assignments.find((a) => a._id === aid) || {
+            title: "",
+            description: "",
+            points: "0",
+            displayGradeAs: "PERCENTAGE",
+            submissionType: "ONLINE",
+            onlineEntryOptions: [],
+            due: "",
+            start: "",
+            course: cid,
+        }
+
+    const [assignment, setAssignment] = useState(initialAssignment);
+
+    const handleSave = () => {
+        if (isEditing) {
+            dispatch(updateAssignment({ ...assignment, _id: aid }));
+        } else {
+            dispatch(addAssignment(assignment));
+        }
+        navigate(`/Kanbas/courses/${cid}/Assignments`);
+    };
+
     return (
         <div id="wd-assignments-editor" className="container">
-            {assignments
-                .filter((assignment: any) => assignment._id === aid)
-                .map((assignment: any) => (
-                    <div key={assignment._id}>
-                        <div className="mb-3 justify-content-end align-items-center">
-                            <label htmlFor="wd-name" className="form-label">Assignment Name</label>
-                            <input id="wd-name" value={assignment.title} className="form-control" />
+            {/* Assignment Name */}
+            <div className="mb-3 justify-content-end align-items-center">
+                <label htmlFor="wd-name" className="form-label">Assignment Name</label>
+                <input
+                    id="wd-name"
+                    name="title"
+                    value={assignment.title}
+                    className="form-control"
+                    onChange={(e) => setAssignment((prev) => ({ ...prev, title: e.target.value }))}
+                />
+            </div>
+
+            {/* Assignment Description */}
+            <div className="form-control mb-3 justify-content-end align-items-center" style={{ height: "auto", padding: "15px", fontSize: "16px" }}>
+                <span>The assignment is <span style={{ color: 'red' }}>available online</span>.</span>
+                <br /><br />
+                <textarea
+                    name="description"
+                    value={assignment.description}
+                    className="form-control"
+                    placeholder="Assignment Description"
+                    onChange={(e) => setAssignment((prev) => ({ ...prev, description: e.target.value }))}
+                />
+            </div>
+
+            {/* Points */}
+            <div className="row mb-3 justify-content-end align-items-center">
+                <label htmlFor="wd-points" className="col-md-3 form-label text-end">Points</label>
+                <div className="col-md-6">
+                    <input
+                        id="wd-points"
+                        name="points"
+                        type="number"
+                        value={assignment.points}
+                        className="form-control"
+                        onChange={(e) => setAssignment((prev) => ({ ...prev, points: e.target.value }))}
+                    />
+                </div>
+            </div>
+
+            {/* Assignment Group */}
+            <div className="container">
+                <div className="row mb-3 justify-content-end align-items-center">
+                    <label htmlFor="wd-group" className="col-md-3 form-label text-end">Assignment Group</label>
+                    <div className="col-md-6">
+                        <div className="input-group">
+                            <select
+                                id="wd-group"
+                                name="group"
+                                value="Assignment"
+                                className="form-control"
+                                onChange={(e) => setAssignment((prev) => ({ ...prev, group: e.target.value }))}
+                            >
+                                <option value="Assignments">ASSIGNMENTS</option>
+                                <option value="Quizzes">QUIZZES</option>
+                                <option value="Exams">EXAMS</option>
+                                <option value="Project">PROJECT</option>
+                            </select>
+                            <span className="input-group-text bg-white">
+                                <FaChevronDown style={{ fontSize: "20px", color: "#6c757d" }} />
+                            </span>
                         </div>
-
-                        <div className="form-control mb-3 justify-content-end align-items-center" style={{ height: "auto", padding: "15px", fontSize: "16px" }}>
-                            The assignment is <span style={{ color: 'red' }}>available online</span>. <br /><br />
-                            {assignment.description}<br /><br />
-                        </div>
+                    </div>
+                </div>
+            </div>
 
 
-
-                        {/* Points */}
-                        < div className="row mb-3 justify-content-end align-items-center" >
-                            <label htmlFor="wd-points" className="col-md-3 form-label text-end">Points</label>
-                            <div className="col-md-6">
-                                <input id="wd-points" value={assignment.points} className="form-control" />
-                            </div>
-                        </div>
-
-
-                        {/* Assignment Group */}
-                        <div className="container">
-                            <div className="row mb-3 justify-content-end align-items-center">
-                                <label htmlFor="wd-group" className="col-md-3 form-label text-end">Assignment Group</label>
-                                <div className="col-md-6">
-                                    <div className="input-group">
-                                        <select id="wd-group" className="form-control">
-                                            <option selected value="Assignments">ASSIGNMENTS</option>
-                                            <option value="QUIZZES">QUIZZES</option>
-                                            <option value="EXAMS">EXAMS</option>
-                                            <option value="PROJECT">PROJECT</option>
-                                        </select>
-                                        <span className="input-group-text bg-white">
-                                            <FaChevronDown style={{ fontSize: "20px", color: "#6c757d" }} />
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        {/* Display Grade as */}
-                        <div className="container">
-                            <div className="row mb-3 justify-content-end align-items-center">
-                                <label htmlFor="wd-display-grade-as" className="col-md-3 form-label text-end">Display Grade as</label>
-                                <div className="col-md-6">
-                                    <div className="input-group">
-                                        <select id="wd-display-grade-as" className="form-control">
-                                            <option selected value="PERCENTAGE">PERCENTAGE</option>
-                                            <option value="DECIMAL">DECIMAL</option>
-                                        </select>
-                                        <span className="input-group-text bg-white">
-                                            <FaChevronDown style={{ fontSize: "20px", color: "#6c757d" }} />
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            {/* Due Date, Available From, Until */}
+            <div className="container">
+                <div className="row mb-3 justify-content-end align-items-center">
+                    <label htmlFor="wd-due-date" className="col-md-3 form-label text-end">Due Date</label>
+                    <div className="col-md-6">
+                        <input
+                            id="wd-due-date"
+                            type="datetime-local"
+                            name="due"
+                            value={assignment.due}
+                            className="form-control"
+                            onChange={(e) => setAssignment((prev) => ({ ...prev, due: e.target.value }))}
+                        />
+                    </div>
+                </div>
+                <div className="row mb-3 justify-content-end align-items-center">
+                    <label htmlFor="wd-available-from" className="col-md-3 form-label text-end">Available from</label>
+                    <div className="col-md-6">
+                        <input
+                            id="wd-available-from"
+                            type="datetime-local"
+                            name="start"
+                            value={assignment.start}
+                            className="form-control"
+                            onChange={(e) => setAssignment((prev) => ({ ...prev, start: e.target.value }))}
+                        />
+                    </div>
+                </div>
+                <div className="row mb-3 justify-content-end align-items-center">
+                    <label htmlFor="wd-available-until" className="col-md-3 form-label text-end">Until</label>
+                    <div className="col-md-6">
+                        <input
+                            id="wd-available-until"
+                            type="datetime-local"
+                            name="end"
+                            value={assignment.due}
+                            className="form-control"
+                            onChange={(e) => setAssignment((prev) => ({ ...prev, end: e.target.value }))}
+                        />
+                    </div>
+                </div>
+            </div>
 
 
-
-                        <div className="container">
-                            {/* Submission Type */}
-                            <div className="row mb-3 justify-content-end align-items-center">
-                                <label htmlFor="wd-submission-type" className="col-md-6 form-label text-end">Submission Type</label>
-                                <div className="col-md-6">
-                                    <div className="border p-3 rounded">
-                                        <div className="mb-3">
-                                            <div className="input-group">
-                                                <select id="wd-submission-type" className="form-control">
-                                                    <option selected value="ONLINE">ONLINE</option>
-                                                </select>
-                                                <span className="input-group-text bg-white">
-                                                    <FaChevronDown style={{ fontSize: "20px", color: "#6c757d" }} />
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Online Entry Options */}
-                                        <div className="row mb-6 justify-content-end align-items-center">
-                                            <div className="col-md-12 offset-md-6">
-                                                <label className="form-label fw-bold">Online Entry Options</label>
-                                                <div className="form-check mb-2">
-                                                    <input type="checkbox" className="form-check-input" id="wd-text-entry" />
-                                                    <label className="form-check-label" htmlFor="wd-text-entry">Text Entry</label>
-                                                </div>
-                                                <div className="form-check mb-2">
-                                                    <input type="checkbox" className="form-check-input" id="wd-website-url" />
-                                                    <label className="form-check-label" htmlFor="wd-website-url">Website URL</label>
-                                                </div>
-                                                <div className="form-check mb-2">
-                                                    <input type="checkbox" className="form-check-input" id="wd-media-recordings" />
-                                                    <label className="form-check-label" htmlFor="wd-media-recordings">Media Recordings</label>
-                                                </div>
-                                                <div className="form-check mb-2">
-                                                    <input type="checkbox" className="form-check-input" id="wd-student-annotation" />
-                                                    <label className="form-check-label" htmlFor="wd-student-annotation">Student Annotation</label>
-                                                </div>
-                                                <div className="form-check">
-                                                    <input type="checkbox" className="form-check-input" id="wd-file-upload" />
-                                                    <label className="form-check-label" htmlFor="wd-file-upload">File Upload</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        {/* Assign Section */}
-                        <div className="container">
-                            <div className="row justify-content-end align-items-center">
-                                <label htmlFor="wd-assign-to" className="col-md-3 form-label text-end">Assign</label>
-                                <div className="col-md-6">
-                                    <div className="border p-3 rounded">
-                                        <div className="mb-3">
-                                            <label htmlFor="wd-assign-to" className="form-label fw-bold">Assign to</label>
-                                            <input id="wd-assign-to" value="Everyone" className="form-control" />
-                                        </div>
-
-                                        {/* Due Date */}
-                                        <div className="mb-3">
-                                            <label htmlFor="wd-due-date" className="form-label fw-bold">Due</label>
-                                            <div className="input-group">
-                                                <input type="datetime-local" id="wd-due-date" value={assignment.due} className="form-control" />
-                                                <span className="input-group-text">
-                                                    <i className="bi bi-calendar"></i> {/* Bootstrap icon for calendar */}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Available From and Until */}
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <label htmlFor="wd-available-from" className="form-label fw-bold">Available from</label>
-                                                <div className="input-group">
-                                                    <input type="datetime-local" id="wd-available-from" value={assignment.start} className="form-control" />
-                                                    <span className="input-group-text">
-                                                        <i className="bi bi-calendar"></i> {/* Bootstrap icon for calendar */}
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <label htmlFor="wd-available-until" className="form-label fw-bold">Until</label>
-                                                <div className="input-group">
-                                                    <input type="datetime-local" id="wd-available-until" value={assignment.due} className="form-control" />
-                                                    <span className="input-group-text">
-                                                        <i className="bi bi-calendar"></i> {/* Bootstrap icon for calendar */}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        {/* Buttons */}
-                        <div className="d-flex justify-content-end mt-3">
-                            <Link to={`/Kanbas/courses/${cid}/Assignments`} className="btn btn-secondary me-2">
-                                Cancel
-                            </Link>
-                            <Link to={`/Kanbas/courses/${cid}/Assignments`} className="btn btn-danger me-2">
-                                Save
-                            </Link>
-                        </div>
-
-
-
-
-
-                    </div >))}
+            {/* Save and Cancel Buttons */}
+            <div className="d-flex justify-content-end mt-3">
+                <Link to={`/Kanbas/courses/${cid}/Assignments`} className="btn btn-secondary me-2">
+                    Cancel
+                </Link>
+                <button onClick={handleSave} className="btn btn-danger me-2">
+                    Save
+                </button>
+            </div>
         </div>
     );
 }

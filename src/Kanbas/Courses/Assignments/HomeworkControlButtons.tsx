@@ -24,8 +24,9 @@ export default function HomeworkControlButtons(
       <IoEllipsisVertical className="fs-4" />
       <DeleteConfirmation assignmentId={assignmentId} assignmentName={assignmentName}
         deleteAssignment={() => {
-          deleteAssignment(assignmentId)}}
-          modalId={modalId} />
+          deleteAssignment(assignmentId)
+        }}
+        modalId={modalId} />
     </div>
   );
 }

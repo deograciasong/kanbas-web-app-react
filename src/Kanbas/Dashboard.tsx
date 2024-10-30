@@ -11,6 +11,17 @@ export default function Dashboard(
         }) {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { enrollments } = db;
+
+    const [showAllCourses, setShowAllCourses] = useState(false);
+    const toggleShowAllCourses = () => setShowAllCourses(!showAllCourses);
+    const filteredCourses = showAllCourses
+        ? courses
+        : courses.filter((course) => enrollments.some(
+            (enrollment) =>
+                enrollment.user === currentUser._id &&
+                enrollment.course === course._id
+        ));
+
     return (
         <div id="wd-dashboard">
             <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -29,21 +40,24 @@ export default function Dashboard(
                         onChange={(e) => setCourse({ ...course, name: e.target.value })} />
                     <textarea value={course.description} className="form-control"
                         onChange={(e) => setCourse({ ...course, description: e.target.value })} />
-            <hr /></div>)}
+                    <hr /></div>)}
+
+            {currentUser.role === "STUDENT" && (
+                <h5>
+                    <button className="btn btn-primary float-end"
+                        id="wd-toggle-courses"
+                        onClick={toggleShowAllCourses}>
+                        {showAllCourses ? "My Enrollments" : "All Courses"}
+                    </button>
+                </h5>
+            )}
 
             <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
             <div id="wd-dashboard-courses" className="row">
                 <div className="wd-dashboard-course">
                     <div className="row row-cols-1 row-cols-md-5 g-4">
                         {
-                            courses
-                                .filter((course) =>
-                                    enrollments.some(
-                                        (enrollment) =>
-                                            enrollment.user === currentUser._id &&
-                                            enrollment.course === course._id
-                                    ))
-
+                            filteredCourses
                                 .map((course) => (
                                     <div className="wd-dashboard-course col" style={{ width: "300px" }}>
                                         <div className="card rounded-3 overflow-hidden">
@@ -58,6 +72,7 @@ export default function Dashboard(
                                                         {course.description}
                                                     </p>
                                                     <button className="btn btn-primary"> Go </button>
+                                                    
                                                     {currentUser.role === "FACULTY" && (
                                                         <>
                                                             <button onClick={(event) => {
@@ -75,6 +90,14 @@ export default function Dashboard(
                                                                 className="btn btn-warning me-2 float-end" >
                                                                 Edit
                                                             </button> </>)}
+
+
+                                                    {currentUser.role === "STUDENT" && (
+                                                        filteredCourses.includes(course.id) ?
+                                                            (<button className="btn btn-danger"> unenroll </button>)
+                                                            :
+                                                            (<button className="btn btn-success"> enroll </button>)
+                                                    )}
 
                                                 </div>
                                             </Link>

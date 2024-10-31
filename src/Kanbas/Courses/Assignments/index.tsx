@@ -48,10 +48,14 @@ export default function Assignments() {
                                     </div>
                                     <div style={{ flexGrow: 1 }}>
                                         <div style={{ fontSize: "19px" }}>
-                                            <a className="wd-assignment-link"
-                                                href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
-                                                {assignment.title}
-                                            </a>
+                                            {currentUser.role === "FACULTY" ? (
+                                                <a className="wd-assignment-link"
+                                                    href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                                                    {assignment.title}
+                                                </a>
+                                            ) : (
+                                                <span>{assignment.title}</span>
+                                            )}
                                         </div>
                                         <div style={{ fontSize: "14px" }}>
                                             <span style={{ color: "red" }}>Multiple Modules</span>
@@ -63,7 +67,7 @@ export default function Assignments() {
                                     </div>
                                     <div className="ms-auto">
                                         <HomeworkControlButtons assignmentId={assignment._id}
-                                        assignmentName={assignment.title}
+                                            assignmentName={assignment.title}
                                             deleteAssignment={() => {
                                                 dispatch(deleteAssignment(assignment._id));
                                             }} />

@@ -5,13 +5,13 @@ import HomeworkControlButtons from "./HomeworkControlButtons";
 import { VscNotebook } from "react-icons/vsc";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useParams } from "react-router";
-import * as db from "../../Database";
 import { useSelector, useDispatch } from "react-redux";
-import React, { useState } from "react";
 import { addAbortSignal } from "stream";
-import { addAssignment, updateAssignment, deleteAssignment }
+import { setAssignment, addAssignment, updateAssignment, deleteAssignment }
     from "./reducer";
-
+import { useState, useEffect } from "react";
+import * as coursesClient from "../client";
+import * as assignmentClient from "./client";
 
 export default function Assignments() {
     const { cid } = useParams();
@@ -19,11 +19,36 @@ export default function Assignments() {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { assignments } = useSelector((state: any) => state.assignmentReducer);
     const dispatch = useDispatch();
+    const fetchAssignments = async () => {
+        const Assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+        dispatch(setAssignment(Assignments));
+    };
+    useEffect(() => {
+        fetchAssignments();
+    }, []);
+
+    const createAssignmentForCourse = async () => {
+        if (!cid) return;
+        const newAssignment = { name: assignmentName, course: cid };
+        const assignment = await coursesClient.createAssignmentForCourse(cid, newAssignment);
+        dispatch(addAssignment(assignment));
+    };
+
+    const removeAssignment = async (aid: string) => {
+        await assignmentClient.deleteAssignment(aid);
+        dispatch(deleteAssignment(aid));
+    };
+
+
+
+
+
     return (
         <div id="wd-assignments">
             {currentUser.role === "FACULTY" && (
                 <div>
-                    <AssignmentControl />
+                    <AssignmentControl setAssignmentName={setAssignmentName} assignmentName={assignmentName}
+                        addAssignment={createAssignmentForCourse} />
                     <br /><br /><br /><br />
                 </div>)}
 
@@ -39,7 +64,6 @@ export default function Assignments() {
 
                     <ul className="wd-assignment-list list-group rounded-0">
                         {assignments
-                            .filter((assignment: any) => assignment.course === cid)
                             .map((assignment: any) => (
                                 <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
                                     <div className="me-3 d-flex align-items-start">
@@ -68,9 +92,7 @@ export default function Assignments() {
                                     <div className="ms-auto">
                                         <HomeworkControlButtons assignmentId={assignment._id}
                                             assignmentName={assignment.title}
-                                            deleteAssignment={() => {
-                                                dispatch(deleteAssignment(assignment._id));
-                                            }} />
+                                            deleteAssignment={(aid) => removeAssignment(aid)} />
                                     </div>
                                 </li>
                             ))}

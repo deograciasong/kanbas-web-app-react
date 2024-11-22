@@ -25,7 +25,7 @@ export default function Courses({ courses }: { courses: any[] }) {
         </div>
         <div className="flex-fill">
           <Routes>
-            <Route element={<ProtectedRoute courseId={cid} />}>
+            <Route>
               <Route path="/" element={<Navigate to="Home" />} />
               <Route path="Home" element={<Home />} />
               <Route path="Modules" element={<Modules />} />

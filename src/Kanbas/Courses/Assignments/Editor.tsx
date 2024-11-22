@@ -3,7 +3,9 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import * as db from "../../Database";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { addAssignment, updateAssignment } from "./reducer"; 
+import { addAssignment, updateAssignment } from "./reducer";
+import * as coursesClient from "../client";
+import * as assignmentClient from "./client";
 
 export default function AssignmentEditor() {
     const { cid, aid } = useParams();
@@ -12,24 +14,27 @@ export default function AssignmentEditor() {
     const isEditing = !!db.assignments.find((a) => a._id === aid);
 
     const initialAssignment = db.assignments.find((a) => a._id === aid) || {
-            title: "",
-            description: "",
-            points: "0",
-            displayGradeAs: "PERCENTAGE",
-            submissionType: "ONLINE",
-            onlineEntryOptions: [],
-            due: "",
-            start: "",
-            course: cid,
-        }
-
+        _id: aid,
+        title: "",
+        description: "",
+        points: "0",
+        displayGradeAs: "PERCENTAGE",
+        submissionType: "ONLINE",
+        onlineEntryOptions: [],
+        due: "",
+        start: "",
+        course: cid,
+    }
+    
     const [assignment, setAssignment] = useState(initialAssignment);
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (isEditing) {
-            dispatch(updateAssignment({ ...assignment, _id: aid }));
+                const upadtedAssignment = await assignmentClient.updateAssignment(assignment);
+                dispatch(updateAssignment({ ...upadtedAssignment, _id: aid }));
         } else {
-            dispatch(addAssignment(assignment));
+            const newAssignment = await coursesClient.createAssignmentForCourse(cid, assignment);
+            dispatch(addAssignment(newAssignment));
         }
         navigate(`/Kanbas/courses/${cid}/Assignments`);
     };

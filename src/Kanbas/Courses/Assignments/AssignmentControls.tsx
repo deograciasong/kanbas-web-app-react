@@ -5,7 +5,8 @@ import { useParams } from "react-router";
 import AssignmentEditor from "./Editor";
 
 export default function AssignmentControl(
-) {
+  { assignmentName, setAssignmentName, addAssignment }:
+  { assignmentName: string; setAssignmentName: (title: string) => void; addAssignment: () => void; }) {
   const { cid } = useParams();
   const newAssignmentId = new Date().getTime().toString();
   return (

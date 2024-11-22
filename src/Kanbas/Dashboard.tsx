@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import * as db from "./Database";
-import { addEnrollment, removeEnrollment } from "./reducer";
+import { fetchAllCourses } from "./Courses/client";
+import { fetchEnrollments, enrollInCourse, unenrollFromCourse } from "./Enrollments/client";
+import { setEnrollments } from "./Account/reducer";
+
+interface Course {
+    _id: string;
+    name: string;
+    description: string;
+    image?: string;
+    facultyId?: string;
+}
 
 interface Enrollment {
     _id: string;
@@ -10,33 +19,70 @@ interface Enrollment {
     course: string;
 }
 
-export default function Dashboard({
-    courses, course, setCourse, addNewCourse,
+export default function Dashboard({ course, setCourse, addNewCourse,
     deleteCourse, updateCourse
 }: {
-    courses: any[]; course: any; setCourse: (course: any) => void;
+    course: any; setCourse: (course: any) => void;
     addNewCourse: () => void; deleteCourse: (course: any) => void;
     updateCourse: () => void;
 }) {
-    const dispatch = useDispatch();
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
-    const enrollments = useSelector((state: any) => state.enrollmentReducer.enrollments) as Enrollment[];
-
-    const handleEnroll = (courseId: string) => dispatch(addEnrollment({ user: currentUser._id, course: courseId }));
-    const handleUnenroll = (courseId: string) => dispatch(removeEnrollment({ user: currentUser._id, course: courseId }));
-
+    const [allCourses, setAllCourses] = useState<Course[]>([]);
+    // const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
     const [showAllCourses, setShowAllCourses] = useState(false);
+    const { currentUser, enrollments }: { currentUser: any; enrollments: Enrollment[]} = useSelector((state: any) => state.accountReducer);
+    const dispatch = useDispatch();
+
+    const getAllEnrollments = async () => {
+        const userEnrollments = await fetchEnrollments(currentUser._id);
+        // setEnrollments(userEnrollments)
+        dispatch(setEnrollments(userEnrollments))
+    }
+
+    const getAllCourses = async () => {
+        const fetchedCourses = await fetchAllCourses();
+        setAllCourses(fetchedCourses);
+    };
+
+    const handleAddCourse = async () => {
+        await addNewCourse()
+        await refresh()
+    }
+
+    const handleDeleteCourse = async (courseId: string) => {
+        await deleteCourse(courseId)
+        await refresh()
+    }
+    const handleUpdateCourse = async () => {
+        await updateCourse()
+        await refresh()
+    }
+
+    const refresh = async () => {
+        getAllCourses()
+        getAllEnrollments()
+    }
+
+    const handleEnroll = async (courseId: string) => {
+        await enrollInCourse(currentUser._id, courseId);
+        await getAllEnrollments();
+    };
+
+    const handleUnenroll = async (courseId: string) => {
+        await unenrollFromCourse(currentUser._id, courseId);
+        dispatch(setEnrollments(enrollments.filter((e) => e.course !== courseId)));
+    };
+
     const toggleShowAllCourses = () => setShowAllCourses(!showAllCourses);
 
-    console.log(enrollments);
-
     const filteredCourses = showAllCourses
-        ? courses
-        : courses.filter((course) =>
-            enrollments.some((enrollment) =>
+        ? allCourses
+        : allCourses.filter((course: Course) => {
+            return enrollments.some((enrollment: Enrollment) =>
                 enrollment.user === currentUser._id && enrollment.course === course._id
             )
-        );
+        })
+
+    useEffect(() => { refresh() }, [currentUser])
 
     return (
         <div id="wd-dashboard">
@@ -46,9 +92,9 @@ export default function Dashboard({
                     <h5>New Course
                         <button className="btn btn-primary float-end"
                             id="wd-add-new-course-click"
-                            onClick={addNewCourse}> Add </button>
+                            onClick={handleAddCourse}> Add </button>
                         <button className="btn btn-warning float-end me-2"
-                            onClick={updateCourse} id="wd-update-course-click">
+                            onClick={handleUpdateCourse} id="wd-update-course-click">
                             Update
                         </button>
                     </h5><br />
@@ -73,7 +119,7 @@ export default function Dashboard({
                 <div className="wd-dashboard-course">
                     <div className="row row-cols-1 row-cols-md-5 g-4">
                         {
-                            filteredCourses.map((course) => (
+                            filteredCourses.map((course: Course) => (
                                 <div className="wd-dashboard-course col" style={{ width: "300px" }} key={course._id}>
                                     <div className="card rounded-3 overflow-hidden">
                                         <Link className="wd-dashboard-course-link text-decoration-none text-dark"
@@ -90,9 +136,9 @@ export default function Dashboard({
 
                                                 {currentUser.role === "FACULTY" && (
                                                     <>
-                                                        <button onClick={(event) => {
-                                                            event.preventDefault();
-                                                            deleteCourse(course._id);
+                                                        <button onClick={(e) => {
+                                                            e.preventDefault()
+                                                            handleDeleteCourse(course._id)
                                                         }} className="btn btn-danger float-end"
                                                             id="wd-delete-course-click">
                                                             Delete

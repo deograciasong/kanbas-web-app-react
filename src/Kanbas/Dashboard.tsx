@@ -27,14 +27,12 @@ export default function Dashboard({ course, setCourse, addNewCourse,
     updateCourse: () => void;
 }) {
     const [allCourses, setAllCourses] = useState<Course[]>([]);
-    // const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
     const [showAllCourses, setShowAllCourses] = useState(false);
     const { currentUser, enrollments }: { currentUser: any; enrollments: Enrollment[]} = useSelector((state: any) => state.accountReducer);
     const dispatch = useDispatch();
 
     const getAllEnrollments = async () => {
         const userEnrollments = await fetchEnrollments(currentUser._id);
-        // setEnrollments(userEnrollments)
         dispatch(setEnrollments(userEnrollments))
     }
 

@@ -47,7 +47,7 @@ export default function CourseProtectedRoute({ children }: { children: any }) {
   const isEnrolled = enrollments.some(
     (enrollment: { user: any; course: string; }) => enrollment.user === currentUser._id && (enrollment.course == cid)
   );
-  if (currentUser.role === "STUDENT" && isEnrolled) {
+  if (isEnrolled) {
     return children;
   } else {
     return <Navigate to="/Kanbas/Dashboard" replace />;

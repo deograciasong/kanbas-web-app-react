@@ -65,6 +65,7 @@ export default function Kanbas() {
               <Dashboard
                 course={courseToBeAdded}
                 setCourse={setCourseToBeAdded}
+                fetchCourses={fetchCourses}
                 addNewCourse={addNewCourse}
                 deleteCourse={deleteCourse}
                 updateCourse={updateCourse} /> </ProtectedRoute>} />

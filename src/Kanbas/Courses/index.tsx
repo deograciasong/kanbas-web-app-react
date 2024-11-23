@@ -7,16 +7,22 @@ import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
 import { FaAlignJustify } from "react-icons/fa";
 import ProtectedRoute from "./ProtectedRoute";
+import { useEffect, useState } from "react";
 
-export default function Courses({ courses }: { courses: any[] }) {
+export default function Courses({ courses }: { courses: any[]}) {
   const { cid } = useParams();
-  const course = courses.find((course) => course._id === cid);
+  // const course = courses.find((course) => course._id === cid);
+  const [course, setCourse] = useState({name: ""});
+  useEffect(() => {
+    setCourse(courses.find((course) => course._id === cid));
+    console.log("course", courses)
+  }, [courses]) 
 
   return (
     <div id="wd-courses">
       <h2 className="text-danger">
         <FaAlignJustify className="me-4 fs-4 mb-1" />
-        {course && course.name} 
+        {course && course?.name} 
       </h2> 
       <hr />
       <div className="d-flex">

@@ -20,11 +20,12 @@ interface Enrollment {
 }
 
 export default function Dashboard({ course, setCourse, addNewCourse,
-    deleteCourse, updateCourse
+    deleteCourse, updateCourse, fetchCourses
 }: {
     course: any; setCourse: (course: any) => void;
     addNewCourse: () => void; deleteCourse: (course: any) => void;
     updateCourse: () => void;
+    fetchCourses: () => void;
 }) {
     const [allCourses, setAllCourses] = useState<Course[]>([]);
     const [showAllCourses, setShowAllCourses] = useState(false);
@@ -62,11 +63,13 @@ export default function Dashboard({ course, setCourse, addNewCourse,
 
     const handleEnroll = async (courseId: string) => {
         await enrollInCourse(currentUser._id, courseId);
+        await fetchCourses();
         await getAllEnrollments();
     };
 
     const handleUnenroll = async (courseId: string) => {
         await unenrollFromCourse(currentUser._id, courseId);
+        await fetchCourses();
         dispatch(setEnrollments(enrollments.filter((e) => e.course !== courseId)));
     };
 

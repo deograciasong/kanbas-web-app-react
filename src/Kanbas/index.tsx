@@ -7,27 +7,87 @@ import "./styles.css";
 import * as userClient from "./Account/client";
 import * as courseClient from "./Courses/client";
 import { useEffect, useState } from "react";
-// update this to import the right protected route
 import ProtectedRoute from "./Account/ProtectedRoute";
 import CourseProtectedRoute from "./Courses/ProtectedRoute"
 import Session from "./Account/Session";
 import { useSelector } from "react-redux";
 
 
+
 export default function Kanbas() {
   const [usersCourses, setUsersCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const [enrolling, setEnrolling] = useState<boolean>(false);
+
+  // const fetchCourses = async () => {
+  //   try {
+  //     const courses = await userClient.findMyCourses();
+  //     setUsersCourses(courses);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchCourses();
+  // }, [currentUser]);
+
+  const findCoursesForUser = async () => {
+    try {
+      const courses = await userClient.findCoursesForUser(currentUser._id);
+      console.log("courses:", courses);
+      setUsersCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+    if (enrolled) {
+      await userClient.enrollIntoCourse(currentUser._id, courseId);
+    } else {
+      await userClient.unenrollFromCourse(currentUser._id, courseId);
+    }
+    setUsersCourses(
+      usersCourses.map((course) => {
+        if (course._id === courseId) {
+          return { ...course, enrolled: enrolled };
+        } else {
+          return course;
+        }
+      })
+    );
+  };
+
+  
   const fetchCourses = async () => {
     try {
-      const courses = await userClient.findMyCourses();
+      const allCourses = await courseClient.fetchAllCourses();
+      const enrolledCourses = await userClient.findCoursesForUser(
+        currentUser._id
+      );
+      console.log("enrolled courses:", enrolledCourses);
+      console.log("all courses:", allCourses);
+      const courses = allCourses.map((course: any) => {
+        if (enrolledCourses.find((c: any) => c._id === course._id)) {
+          return { ...course, enrolled: true };
+        } else {
+          return course;
+        }
+      });
       setUsersCourses(courses);
     } catch (error) {
       console.error(error);
     }
   };
   useEffect(() => {
-    fetchCourses();
-  }, [currentUser]);
+    console.log("enrolling:", enrolling);
+    if (enrolling) {
+      fetchCourses();
+    } else {
+      findCoursesForUser();
+    }
+  }, [currentUser, enrolling]);
+ 
 
 
   const [courseToBeAdded, setCourseToBeAdded] = useState<any>({
@@ -52,6 +112,7 @@ export default function Kanbas() {
     }));
   };
 
+  console.log("users courses:", usersCourses);
 
   return (
     <Session>
@@ -63,13 +124,18 @@ export default function Kanbas() {
             <Route path="Account/*" element={<Account />} />
             <Route path="Dashboard" element={<ProtectedRoute>
               <Dashboard
+              courses={usersCourses}
                 course={courseToBeAdded}
                 setCourse={setCourseToBeAdded}
                 fetchCourses={fetchCourses}
                 addNewCourse={addNewCourse}
                 deleteCourse={deleteCourse}
-                updateCourse={updateCourse} /> </ProtectedRoute>} />
-            <Route path="Courses/:cid/*" element={<CourseProtectedRoute><Courses courses={usersCourses} /></CourseProtectedRoute>} />
+                updateCourse={updateCourse}
+                enrolling={enrolling} 
+                setEnrolling={setEnrolling}
+                updateEnrollment={updateEnrollment}/> </ProtectedRoute>} />
+            {/* <Route path="Courses/:cid/*" element={<CourseProtectedRoute><Courses courses={usersCourses} /></CourseProtectedRoute>} /> */}
+            <Route path="Courses/:cid/*" element={<Courses courses={usersCourses} />} />
             <Route path="/Calendar" element={<h1>Calendar</h1>} />
             <Route path="/Inbox" element={<h1>Inbox</h1>} />
           </Routes>
@@ -78,5 +144,3 @@ export default function Kanbas() {
     </Session>
   );
 }
-
-// delete this line

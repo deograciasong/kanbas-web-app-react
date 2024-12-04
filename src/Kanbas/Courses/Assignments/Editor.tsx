@@ -2,22 +2,34 @@ import { FaChevronDown } from "react-icons/fa";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import * as db from "../../Database";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
 import * as coursesClient from "../client";
 import * as assignmentClient from "./client";
 
 export default function AssignmentEditor() {
     const { cid, aid } = useParams();
+    const { assignments } = useSelector((state: any) => state.assignmentReducer);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const isEditing = !!db.assignments.find((a) => a._id === aid);
+    // const isEditing = Boolean(assignmentClient.findAssignmentById(aid));
+    // console.log("isEditing", isEditing);
+    // const isEditing = Boolean(aid);
+    console.log("assignments", assignments);
+    const isEditing = assignments.some((assignment: any) => assignment._id === aid);
+    console.log("isEditing", isEditing);
 
-    const initialAssignment = db.assignments.find((a) => a._id === aid) || {
+    const fetchAssignment = async () => {
+        const assignment = await assignmentClient.findAssignmentById(aid);
+        setAssignment(assignment);
+    }
+
+    const initialAssignment =  {
         _id: aid,
         title: "",
         description: "",
-        points: "0",
+        points: "100",
         displayGradeAs: "PERCENTAGE",
         submissionType: "ONLINE",
         onlineEntryOptions: [],
@@ -29,15 +41,25 @@ export default function AssignmentEditor() {
     const [assignment, setAssignment] = useState(initialAssignment);
 
     const handleSave = async () => {
-        if (isEditing) {
+        if ( isEditing) {
+            console.log("editing", "YES");
                 const upadtedAssignment = await assignmentClient.updateAssignment(assignment);
                 dispatch(updateAssignment({ ...upadtedAssignment, _id: aid }));
         } else {
+            console.log("editing", "NO");
             const newAssignment = await coursesClient.createAssignmentForCourse(cid, assignment);
             dispatch(addAssignment(newAssignment));
         }
         navigate(`/Kanbas/courses/${cid}/Assignments`);
     };
+
+    useEffect(() => {
+        const isEditing = assignments.some((assignment: any) => assignment._id === aid);
+
+        if (isEditing) {
+            fetchAssignment();
+        }
+    }, []);
 
     return (
         <div id="wd-assignments-editor" className="container">

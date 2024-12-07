@@ -6,10 +6,13 @@ import PeopleTable from "./People/Table";
 import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
 import Quizzes from "./Quizzes";
+import QuizEditor from "./Quizzes/Editor";
+import QuizDetails from "./Quizzes/Details";
 import { FaAlignJustify } from "react-icons/fa";
 import ProtectedRoute from "./ProtectedRoute";
 import { useEffect, useState } from "react";
 import * as client from "./client";
+ 
 
 
 export default function Courses({ courses }: { courses: any[]}) {
@@ -55,6 +58,8 @@ export default function Courses({ courses }: { courses: any[]}) {
               <Route path="Assignments/:aid" element={<AssignmentEditor />} />
               <Route path="People" element={<PeopleTable users={users}/>} />
               <Route path="Quizzes" element={<Quizzes />} />
+              <Route path="Quizzes/:qid" element={<QuizEditor />} />
+              <Route path="Quizzes/Details/:qid" element={<QuizDetails />} />
             </Route>
           </Routes>
         </div>

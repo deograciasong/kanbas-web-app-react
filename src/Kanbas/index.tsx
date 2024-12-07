@@ -34,6 +34,7 @@ export default function Kanbas() {
   const findCoursesForUser = async () => {
     try {
       const courses = await userClient.findCoursesForUser(currentUser._id);
+      console.log("currentUser:", currentUser);
       console.log("courses:", courses);
       setUsersCourses(courses);
     } catch (error) {
@@ -65,8 +66,6 @@ export default function Kanbas() {
       const enrolledCourses = await userClient.findCoursesForUser(
         currentUser._id
       );
-      console.log("enrolled courses:", enrolledCourses);
-      console.log("all courses:", allCourses);
       const courses = allCourses.map((course: any) => {
         if (enrolledCourses.find((c: any) => c._id === course._id)) {
           return { ...course, enrolled: true };
@@ -80,7 +79,6 @@ export default function Kanbas() {
     }
   };
   useEffect(() => {
-    console.log("enrolling:", enrolling);
     if (enrolling) {
       fetchCourses();
     } else {

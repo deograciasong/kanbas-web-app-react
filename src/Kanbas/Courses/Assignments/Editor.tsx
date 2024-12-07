@@ -13,12 +13,7 @@ export default function AssignmentEditor() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    // const isEditing = Boolean(assignmentClient.findAssignmentById(aid));
-    // console.log("isEditing", isEditing);
-    // const isEditing = Boolean(aid);
-    console.log("assignments", assignments);
     const isEditing = assignments.some((assignment: any) => assignment._id === aid);
-    console.log("isEditing", isEditing);
 
     const fetchAssignment = async () => {
         const assignment = await assignmentClient.findAssignmentById(aid);
@@ -54,8 +49,6 @@ export default function AssignmentEditor() {
     };
 
     useEffect(() => {
-        const isEditing = assignments.some((assignment: any) => assignment._id === aid);
-
         if (isEditing) {
             fetchAssignment();
         }

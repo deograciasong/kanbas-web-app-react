@@ -6,12 +6,18 @@ import * as coursesClient from "../client";
 import { setQuiz, addQuiz, updateQuiz, deleteQuiz } from "./reducer";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
+import AssignmentControlButtons from "../Assignments/AssignmentControlButtons";
+import QuizControl from "./QuizzesControl";
+import QuizControlButtons from "./QuizControlButtons";
+import * as quizClient from "./client";
+import { IoEllipsisVertical } from "react-icons/io5";
 
 export default function Quizzes() {
 
     const { cid } = useParams();
-    // const [quizName, setQuizName] = useState("");
+    const [quizName, setQuizName] = useState("");
     const { quizzes } = useSelector((state: any) => state.quizReducer);
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const dispatch = useDispatch();
 
     const fetchQuiz = async () => {
@@ -22,10 +28,31 @@ export default function Quizzes() {
         fetchQuiz();
     }, []);
 
+
+    const createQuizForCourse = async () => {
+        if (!cid) return;
+        const newQuiz = { name: quizName, course: cid };
+        const quiz = await coursesClient.createQuizForCourse(cid, newQuiz);
+        dispatch(addQuiz(quiz));
+    };
+
+    const removeQuiz = async (qid: string) => {
+        await quizClient.deleteQuiz(qid);
+        console.log("qid", qid);
+        dispatch(deleteQuiz(qid));
+        console.log("run delete");
+    };
+
     console.log("quizzes", quizzes);
-    
+
     return (
         <div id="wd-quizzes">
+            {currentUser.role === "FACULTY" && (
+                <div>
+                    <QuizControl setQuizName={setQuizName} quizName={quizName}
+                        addQuiz={createQuizForCourse} />
+                    <br /><br /><br /><br />
+                </div>)}
 
             <ul id="wd-quizzes-title" className="list-group rounded-0">
                 <li className="wd-quizzes list-group-item p-0 mb-5 fs-5 border-gray">
@@ -33,6 +60,8 @@ export default function Quizzes() {
                         <BsGripVertical className="me-1 fs-2" />
                         <MdOutlineArrowDropDown className="me-1 fs-2" />
                         QUIZZES
+                        {currentUser.role === "FACULTY" && (
+                            <AssignmentControlButtons />)}
                     </div>
 
                     <ul className="wd-quizz-list list-group rounded-0">
@@ -45,28 +74,30 @@ export default function Quizzes() {
                                     </div>
                                     <div style={{ flexGrow: 1 }}>
                                         <div style={{ fontSize: "19px" }}>
-                                            {quiz.title}
+                                            <a className="wd-assignment-link"
+                                                href={`#/Kanbas/Courses/${cid}/Quizzes/Details/${quiz._id}`}>
+                                                {quiz.title}
+                                            </a>
                                             {/* {currentUser.role === "FACULTY" ? (
                                                 <a className="wd-assignment-link"
-                                                    href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                                                    href={`#/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`}>
                                                     {quiz.title}
                                                 </a>
                                             ) : (
                                                 <span>{quiz.title}</span>
                                             )} */}
                                         </div>
-                                        <div style={{ fontSize: "14px" }}>
-                                            <span style={{ color: "red" }}>Multiple Modules</span>
-                                            {/* <span> | <strong>Not available until</strong> {quiz.startWritten} |</span> */}
-                                        </div>
-                                        <div style={{ fontSize: "14px" }}>
-                                            {/* | <strong>Due</strong> {quiz.dueWritten}| {quiz.points} pts */}
+                                        <div style={{ fontSize: "12px" }}>
+                                            <span> <strong> {quiz.availability} </strong>
+                                                |  {quiz.points} pts | {quiz.numberOfQuestions} Questions</span>
                                         </div>
                                     </div>
                                     <div className="ms-auto">
-                                        {/* <HomeworkControlButtons quiz={quiz._id}
-                                            assignmentName={quiz.title}
-                                            deleteAssignment={(qid) => removeAssignment(qid)} /> */}
+                                        {currentUser.role === "FACULTY" ? (
+                                            <QuizControlButtons quizId={quiz._id} quizName={quiz.title}
+                                                deleteQuiz={(qid) => removeQuiz(qid)} />
+                                        ) : (
+                                            <IoEllipsisVertical />)}
                                     </div>
                                 </li>
                             ))}

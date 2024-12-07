@@ -36,7 +36,16 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
     const { currentUser, enrollments }: { currentUser: any; enrollments: Enrollment[] } = useSelector((state: any) => state.accountReducer);
     const dispatch = useDispatch();
 
-    useEffect(() => { refresh() }, [currentUser])
+    useEffect(() => {
+        if (currentUser && currentUser._id) {
+            const fetchData = async () => {
+                await getAllEnrollments();
+                await getAllCourses();
+            };
+            fetchData();
+        }
+    }, [currentUser]);
+
 
     const getAllEnrollments = async () => {
         const userEnrollments = await fetchEnrollments(currentUser._id);
@@ -53,8 +62,9 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
         await refresh()
     }
 
-    const handleDeleteCourse = async (courseId: string) => {
-        await deleteCourse(courseId)
+    const handleDeleteCourse = async (course: any) => {
+        await updateEnrollment(course._id, course.enrolled)
+        await deleteCourse(course._id)
         await refresh()
     }
     const handleUpdateCourse = async () => {
@@ -66,32 +76,6 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
         await getAllCourses()
         await getAllEnrollments()
     }
-
-    console.log("Dashboard", { courses })
-
-    // const handleEnroll = async (courseId: string) => {
-    //     await enrollInCourse(currentUser._id, courseId);
-    //     await fetchCourses();
-    //     await getAllEnrollments();
-    // };
-
-    // const handleUnenroll = async (courseId: string) => {
-    //     await unenrollFromCourse(currentUser._id, courseId);
-    //     await fetchCourses();
-    //     dispatch(setEnrollments(enrollments.filter((e) => e.course !== courseId)));
-    // };
-
-    // const toggleShowAllCourses = () => setShowAllCourses(!showAllCourses);
-
-    // const filteredCourses = showAllCourses
-    //     ? allCourses
-    //     : allCourses.filter((course: Course) => {
-    //         return enrollments.some((enrollment: Enrollment) =>
-    //             enrollment.user === currentUser._id && enrollment.course === course._id
-    //         )
-    //     })
-
-    // useEffect(() => { refresh() }, [currentUser])
 
     return (
         <div id="wd-dashboard">
@@ -159,7 +143,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                                                     <>
                                                         <button onClick={(e) => {
                                                             e.preventDefault()
-                                                            handleDeleteCourse(course._id)
+                                                            handleDeleteCourse(course)
                                                         }} className="btn btn-danger float-end"
                                                             id="wd-delete-course-click">
                                                             Delete

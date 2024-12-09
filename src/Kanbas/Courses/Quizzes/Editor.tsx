@@ -8,14 +8,16 @@ import * as coursesClient from "../client";
 import * as assignmentClient from "./client";
 import * as quizClient from "./client";
 import { addQuiz, updateQuiz } from "./reducer";
-import { group } from "console";
+// import { group } from "console";
 import { Tabs, Tab } from "react-bootstrap";
+// import { on } from "events";
+import QuestionControl from "./QuestionControl";
 
 
 export default function QuiZEditor() {
     const { cid, qid } = useParams();
     const { quizzes } = useSelector((state: any) => state.quizReducer);
-    const [activeTab, setActiveTab] = useState<string>('details');
+    const [activeTab, setActiveTab] = useState<string>('questions');
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -44,9 +46,14 @@ export default function QuiZEditor() {
         group: "Quizzes",
         course: cid,
         shuffleAnswers: "Yes",
-        timeLimit: 0,
+        timeLimit: 20,
         multipleAttempts: "No",
         showCorrectAnswers: "Yes",
+        accessCode: "",
+        oneQuestionAtATime: "Yes",
+        webcamRequired: "No",
+        lockQuestionsAfterAnswering: "No",
+
 
     }
 
@@ -123,7 +130,7 @@ export default function QuiZEditor() {
                                         <select
                                             id="wd-group"
                                             name="quizType"
-                                            value="QuizType"
+                                            value={quiz.type}
                                             className="form-control"
                                             onChange={(e) => setQuiz((prev) => ({ ...prev, type: e.target.value }))}
                                         >
@@ -149,7 +156,7 @@ export default function QuiZEditor() {
                                         <select
                                             id="wd-group"
                                             name="group"
-                                            value="Quiz"
+                                            value={quiz.group}
                                             className="form-control"
                                             onChange={(e) => setQuiz((prev) => ({ ...prev, group: e.target.value }))}
                                         >
@@ -226,23 +233,101 @@ export default function QuiZEditor() {
                         {/* Show Correct Answers */}
                         <div className="container">
                             <div className="row mb-3 justify-content-end align-items-center">
-                                <label htmlFor="wd-show-correct-answers" className="col-md-3 form-label text-end">Show Correct Answers</label>
+                                <label htmlFor="wd-multiple-attempts" className="col-md-3 form-label text-end">Show Correct Answers</label>
                                 <div className="col-md-6">
 
-                                    <input
+                                    <select
                                         id="wd-show-correct-answers"
                                         name="showCorrectAnswers"
                                         value={quiz.showCorrectAnswers}
                                         className="form-control"
                                         onChange={(e) => setQuiz((prev) => ({ ...prev, showCorrectAnswers: e.target.value }))}
-                                    />
+                                    >
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
 
 
+                        {/* Access Code */}
+                        <div className="container">
+                            <div className="row mb-3 justify-content-end align-items-center">
+                                <label htmlFor="wd-show-correct-answers" className="col-md-3 form-label text-end">Access Code</label>
+                                <div className="col-md-6">
+
+                                    <input
+                                        id="wd-access-code"
+                                        name="accessCode"
+                                        value={quiz.accessCode}
+                                        className="form-control"
+                                        onChange={(e) => setQuiz((prev) => ({ ...prev, accessCode: e.target.value }))}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* One Question at a time */}
+                        <div className="container">
+                            <div className="row mb-3 justify-content-end align-items-center">
+                                <label htmlFor="wd-multiple-attempts" className="col-md-3 form-label text-end">One Question at a time</label>
+                                <div className="col-md-6">
+
+                                    <select
+                                        id="wd-one-question-at-a-time"
+                                        name="oneQuestionAtATime"
+                                        value={quiz.oneQuestionAtATime}
+                                        className="form-control"
+                                        onChange={(e) => setQuiz((prev) => ({ ...prev, oneQuestionAtATime: e.target.value }))}
+                                    >
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
 
+                        {/* Webcam Required */}
+                        <div className="container">
+                            <div className="row mb-3 justify-content-end align-items-center">
+                                <label htmlFor="wd-multiple-attempts" className="col-md-3 form-label text-end">Webcam Required</label>
+                                <div className="col-md-6">
+
+                                    <select
+                                        id="wd-webcam-required"
+                                        name="webcamRequired"
+                                        value={quiz.webcamRequired}
+                                        className="form-control"
+                                        onChange={(e) => setQuiz((prev) => ({ ...prev, webcamRequired: e.target.value }))}
+                                    >
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Lock Questions after answering */}
+                        <div className="container">
+                            <div className="row mb-3 justify-content-end align-items-center">
+                                <label htmlFor="wd-multiple-attempts" className="col-md-3 form-label text-end">Lock Questions after answering</label>
+                                <div className="col-md-6">
+
+                                    <select
+                                        id="wd-lock-questions-after-answering"
+                                        name="lockQuestionsAfterAnswering"
+                                        value={quiz.lockQuestionsAfterAnswering}
+                                        className="form-control"
+                                        onChange={(e) => setQuiz((prev) => ({ ...prev, lockQuestionsAfterAnswering: e.target.value }))}
+                                    >
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
                         {/* Due Date, Available From, Until */}
                         <div className="container">
@@ -299,10 +384,9 @@ export default function QuiZEditor() {
                         </div>
                     </div>
                 </Tab>
-                <Tab eventKey="blank" title="Questions">
+                <Tab eventKey="questions" title="Questions">
                     <div className="mt-3">
-                        <h1>Blank Tab</h1>
-                        <p>This is a blank tab for now.</p>
+                        <QuestionControl />
                     </div>
                 </Tab>
             </Tabs>

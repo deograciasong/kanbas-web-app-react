@@ -8,6 +8,7 @@ import AssignmentEditor from "./Assignments/Editor";
 import Quizzes from "./Quizzes";
 import QuizEditor from "./Quizzes/Editor";
 import QuizDetails from "./Quizzes/Details";
+import QuestionEditor from "./Quizzes/QuestionEditor";
 import { FaAlignJustify } from "react-icons/fa";
 import ProtectedRoute from "./ProtectedRoute";
 import { useEffect, useState } from "react";
@@ -60,6 +61,7 @@ export default function Courses({ courses }: { courses: any[]}) {
               <Route path="Quizzes" element={<Quizzes />} />
               <Route path="Quizzes/:qid" element={<QuizEditor />} />
               <Route path="Quizzes/Details/:qid" element={<QuizDetails />} />
+              <Route path="Quizzes/:qid/questions/:questionId" element={<QuestionEditor />} />
             </Route>
           </Routes>
         </div>

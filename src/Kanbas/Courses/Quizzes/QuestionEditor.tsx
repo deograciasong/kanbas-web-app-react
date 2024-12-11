@@ -11,14 +11,7 @@ import * as quizClient from './client';
 export default function QuestionEditor() {
     const navigate = useNavigate();
     const { cid, qid, questionId } = useParams();
-    const { questions } = useSelector((state: any) => state.questionReducer);
-
-    const isEditing = questions.some((question: any) => question._id === questionId);
-
-    const fetchQuestion = async () => {
-        const question = await quizClient.findQuestionById(questionId, qid);
-        setQuestion(question);
-    }
+    const [questions, setQuestions] = useState<any[]>([]);
 
     const initialQuestion = {
         _id: questionId,
@@ -33,7 +26,24 @@ export default function QuestionEditor() {
 
     const [question, setQuestion] = useState(initialQuestion);
 
+    const fetchQuestion = async () => {
+        const question = await quizClient.findQuestionById(questionId, qid);
+        setQuestion(question);
+    }
+
+    const getAllQuestions = async () => {
+        const fetchedQuestions = await quizClient.findQuestionsForQuiz(qid as string);
+        setQuestions(fetchedQuestions);
+    }
+    useEffect(() => {
+        getAllQuestions();
+    }
+        , []);
+
+
+
     const dispatch = useDispatch();
+    const isEditing = questions.some((question: any) => question._id === questionId);
 
     const handleSave = async () => {
         if (isEditing) {
@@ -55,7 +65,9 @@ export default function QuestionEditor() {
         if (isEditing) {
             fetchQuestion();
         }
-    }, []);
+    }, [isEditing]);
+
+
 
     return (
         <div className="container">

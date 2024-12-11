@@ -44,10 +44,6 @@ export default function TakeQuiz() {
         dispatch(setResult(userResults))
     }
 
-    // const fetchResult = async () => {
-    //     const quiz = await quizClient.findQuizById(qid);
-    //     setQuiz(quiz);
-    // }
 
     const handleNext = () => {
         if (currentQuestionIndex < questions.length - 1) {
@@ -119,7 +115,7 @@ export default function TakeQuiz() {
             <div className="card mb-3">
                 <div className="card-body">
                     <h5 className="card-title">{currentQuestion.title}</h5>
-                    <p className="card-text">{currentQuestion.text}</p>
+                    <p className="card-text" dangerouslySetInnerHTML={{ __html: currentQuestion.text }} />
                     {currentQuestion.type === 'Multiple Choice' && (
                         <div>
                             {currentQuestion.choices.map((choice: string, index: number) => (

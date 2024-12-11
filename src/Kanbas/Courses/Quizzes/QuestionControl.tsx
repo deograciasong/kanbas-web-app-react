@@ -26,7 +26,7 @@ export default function QuestionControl() {
     };
     useEffect(() => {
         fetchQuestions();
-    }, []);
+    }, [questions]);
 
     const createQuestionForQuiz = async () => {
         if (!qid) return;
@@ -58,12 +58,12 @@ export default function QuestionControl() {
 
     return (
         <div className="container">
-            <h1>Question Editor</h1><br />
+            <br />
             <div className="d-flex justify-content-center mb-3">
                 <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/questions/${newQuestionId}`}>
                     <button className="btn btn-secondary btn-lg" >+ New Question</button>
                 </Link>
-            </div>            <br /><hr />
+            </div>            <br />
             <div>
                 {questions.map((question: any) => (
                     <div key={question._id} className="card mb-3">
@@ -77,7 +77,7 @@ export default function QuestionControl() {
                                     <button className="btn btn-danger" onClick={() => removeQuestion(question.quiz, question._id)}>Delete</button>
                                 </div>
                             </div>
-                            <p className="card-text"><strong>Question:</strong> {question.text}</p>
+                            <p className="card-text"><strong>Question:</strong><p className="card-text" dangerouslySetInnerHTML={{ __html: question.text }} /></p>
                             <p className="card-text"><strong>Choices:</strong> {question.choices.join(', ')}</p>
                             <p className="card-text"><strong>Points:</strong> {question.points}</p>
                         </div>

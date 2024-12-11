@@ -19,15 +19,35 @@ export default function QuiZEditor() {
     const { cid, qid } = useParams();
     const { quizzes } = useSelector((state: any) => state.quizReducer);
     const [activeTab, setActiveTab] = useState<string>('questions');
+    const [questions, setQuestions] = useState<any[]>([]);
+
+
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isEditing = quizzes.some((quiz: any) => quiz._id === qid);
+    const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
+    const currentUserId = currentUser?._id;
 
     const fetchQuiz = async () => {
         const quiz = await quizClient.findQuizById(qid);
         setQuiz(quiz);
     }
+
+    const fetchQuestions = async () => {
+        const fetchedQuestions = await quizClient.findQuestionsForQuiz(qid as string);
+        setQuestions(fetchedQuestions);
+    };
+
+    useEffect(() => {
+        fetchQuestions();
+    }, [qid]);
+
+    useEffect(() => {
+        const totalPoints = questions.reduce((sum, question) => sum + question.points, 0);
+        const totalQuestions = questions.length;
+        setQuiz((prevQuiz) => ({ ...prevQuiz, points: totalPoints, numberOfQuestions: totalQuestions }));
+    }, [questions]);
 
     const initialQuiz = {
         _id: qid,
@@ -51,6 +71,7 @@ export default function QuiZEditor() {
         oneQuestionAtATime: "Yes",
         webcamRequired: "No",
         lockQuestionsAfterAnswering: "No",
+        numberOfQuestions: 0,
 
 
     }
@@ -96,8 +117,8 @@ export default function QuiZEditor() {
                             <span>Quiz Instructions</span>
                             <br /><br />
                             <ReactQuill
-                            value={quiz.instructions}
-                            onChange={(value) => setQuiz((prev) => ({ ...prev, instructions: value }))}
+                                value={quiz.instructions}
+                                onChange={(value) => setQuiz((prev) => ({ ...prev, instructions: value }))}
                             />
                         </div>
 
@@ -111,8 +132,21 @@ export default function QuiZEditor() {
                                     type="number"
                                     value={quiz.points}
                                     className="form-control"
-                                    onChange={(e) => setQuiz((prev) => ({ ...prev, points: e.target.value }))}
-                                />
+                                    readOnly />
+                            </div>
+                        </div>
+
+                        {/* Number of Questions */}
+                        <div className="row mb-3 justify-content-end align-items-center">
+                            <label htmlFor="wd-points" className="col-md-3 form-label text-end">Number of Questions</label>
+                            <div className="col-md-6">
+                                <input
+                                    id="wd-points"
+                                    name="points"
+                                    type="number"
+                                    value={quiz.numberOfQuestions}
+                                    className="form-control"
+                                    readOnly />
                             </div>
                         </div>
 
@@ -381,7 +415,7 @@ export default function QuiZEditor() {
                 </Tab>
                 <Tab eventKey="questions" title="Questions">
                     <div className="mt-3">
-                        <QuestionControl/>
+                        <QuestionControl />
                     </div>
                 </Tab>
             </Tabs>

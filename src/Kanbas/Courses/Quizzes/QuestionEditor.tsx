@@ -1,45 +1,61 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import TrueOrFalse from './QuestionTypes/TrueOrFalse';
 import FillInTheBlanks from './QuestionTypes/FillInTheBlanks';
 import MultipleChoice from './QuestionTypes/MultipleChoice';
-import { useDispatch } from 'react-redux';
-import { setQuestion, addQuestion, deleteQuestion, updateQuestion } from './questionReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { setQuestions, addQuestion, deleteQuestion, updateQuestion } from './questionReducer';
 import * as quizClient from './client';
 
 
 export default function QuestionEditor() {
     const navigate = useNavigate();
-    const { cid, qid } = useParams();
+    const { cid, qid, questionId } = useParams();
+    const { questions } = useSelector((state: any) => state.questionReducer);
 
-    const [questionType, setQuestionType] = useState('True/False');
-    const [questionTitle, setQuestionTitle] = useState('');
-    const [points, setPoints] = useState(0);
-    const [questionText, setQuestionText] = useState('');
-    const [correctAnswer, setCorrectAnswer] = useState('');
-    const [options, setOptions] = useState<string[]>(['']);
+    const isEditing = questions.some((question: any) => question._id === questionId);
 
-    const [questionName, setQuestionName] = useState("");
+    const fetchQuestion = async () => {
+        const question = await quizClient.findQuestionById(questionId, qid);
+        setQuestion(question);
+    }
+
+    const initialQuestion = {
+        _id: questionId,
+        title: "",
+        quiz: qid,
+        points: 0,
+        choices: [],
+        type: "Multiple Choice",
+        correctAnswers: "",
+        text: "",
+    }
+
+    const [question, setQuestion] = useState(initialQuestion);
+
     const dispatch = useDispatch();
 
     const handleSave = async () => {
-        await createQuestionForQuiz();
-        console.log('Question saved');
-        navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`); // Navigate back to the QuestionControl screen
+        if (isEditing) {
+            const updatedQuestion = await quizClient.updateQuestion(qid, question);
+            dispatch(updateQuestion({ ...updatedQuestion, _id: questionId }));
+        } else {
+            const newQuestion = await quizClient.createQuestionForQuiz(qid, question);
+            dispatch(addQuestion(newQuestion));
+        }
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
     };
 
     const handleCancel = () => {
-        // Logic to cancel the operation
-        console.log('Operation cancelled');
-        navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`); // Navigate back to the QuestionControl screen
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
     };
 
-    const createQuestionForQuiz = async () => {
-        if (!qid) return;
-        const newQuestion = { name: questionName, quiz: qid };
-        const question = await quizClient.createQuestionForQuiz(qid, newQuestion);
-        dispatch(addQuestion(question));
-    };
+
+    useEffect(() => {
+        if (isEditing) {
+            fetchQuestion();
+        }
+    }, []);
 
     return (
         <div className="container">
@@ -51,8 +67,8 @@ export default function QuestionEditor() {
                         id="question-title"
                         type="text"
                         className="form-control"
-                        value={questionTitle}
-                        onChange={(e) => setQuestionTitle(e.target.value)}
+                        value={question.title}
+                        onChange={(e) => setQuestion((prev) => ({ ...prev, title: e.target.value }))}
                     />
                 </div>
                 <div className="col-md-6">
@@ -60,8 +76,8 @@ export default function QuestionEditor() {
                     <select
                         id="question-type"
                         className="form-control"
-                        value={questionType}
-                        onChange={(e) => setQuestionType(e.target.value)}
+                        value={question.type}
+                        onChange={(e) => setQuestion((prev) => ({ ...prev, type: e.target.value }))}
                     >
                         <option value="True/False">True/False</option>
                         <option value="Fill in the blank">Fill in the blank</option>
@@ -69,56 +85,25 @@ export default function QuestionEditor() {
                     </select>
                 </div>
             </div>
-            {questionType === 'True/False' && (
+            {question.type === 'True/False' && (
                 <TrueOrFalse
-                    questionTitle={questionTitle}
-                    setQuestionTitle={setQuestionTitle}
-                    points={points}
-                    setPoints={setPoints}
-                    questionText={questionText}
-                    setQuestionText={setQuestionText}
-                    correctAnswer={correctAnswer}
-                    setCorrectAnswer={setCorrectAnswer}
+                    question={question}
+                    setQuestion={setQuestion}
                 />
             )}
-            {questionType === 'Fill in the blank' && (
+            {question.type === 'Fill in the blank' && (
                 <FillInTheBlanks
-                    questionTitle={questionTitle}
-                    setQuestionTitle={setQuestionTitle}
-                    points={points}
-                    setPoints={setPoints}
-                    questionText={questionText}
-                    setQuestionText={setQuestionText}
-                    correctAnswer={correctAnswer}
-                    setCorrectAnswer={setCorrectAnswer}
+                    question={question}
+                    setQuestion={setQuestion}
                 />
             )}
-            {questionType === 'Multiple Choice' && (
-               <MultipleChoice
-               questionTitle={questionTitle}
-               setQuestionTitle={setQuestionTitle}
-               points={points}
-               setPoints={setPoints}
-               questionText={questionText}
-               setQuestionText={setQuestionText}
-               correctAnswer={correctAnswer}
-               setCorrectAnswer={setCorrectAnswer}
-               options={options}
-               setOptions={setOptions}
-           />
+            {question.type === 'Multiple Choice' && (
+                <MultipleChoice
+                    question={question}
+                    setQuestion={setQuestion}
+                />
             )}
             <hr />
-
-
-            <div className="d-flex justify-content-end">
-                <button
-                    className="btn btn-lg"
-                    style={{ backgroundColor: 'transparent', color: 'red', border: 'none' }}
-                    onClick={() => console.log('Adding question')}
-                >
-                    + New Question
-                </button>
-            </div>
             <hr />
             <div className="d-flex justify-content-start">
                 <button className="btn btn-secondary me-2" onClick={handleCancel}>Cancel</button>

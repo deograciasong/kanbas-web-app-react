@@ -13,6 +13,8 @@ import { FaAlignJustify } from "react-icons/fa";
 import ProtectedRoute from "./ProtectedRoute";
 import { useEffect, useState } from "react";
 import * as client from "./client";
+import TakeQuiz from "./Quizzes/takeQuiz";
+import Results from "./Quizzes/results";
  
 
 
@@ -62,6 +64,10 @@ export default function Courses({ courses }: { courses: any[]}) {
               <Route path="Quizzes/:qid" element={<QuizEditor />} />
               <Route path="Quizzes/Details/:qid" element={<QuizDetails />} />
               <Route path="Quizzes/:qid/questions/:questionId" element={<QuestionEditor />} />
+              <Route path="Quizzes/:qid/takeQuiz" element={<TakeQuiz />} />
+              <Route path="Quizzes/:qid/results" element={<Results />} />
+
+
             </Route>
           </Routes>
         </div>

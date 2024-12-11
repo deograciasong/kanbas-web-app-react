@@ -1,24 +1,30 @@
 import React from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default function FillInTheBlanks({
-    questionTitle,
-    setQuestionTitle,
-    points,
-    setPoints,
-    questionText,
-    setQuestionText,
-    correctAnswer,
-    setCorrectAnswer
+    question,
+    setQuestion
 }: {
-    questionTitle: string;
-    setQuestionTitle: (title: string) => void;
-    points: number;
-    setPoints: (points: number) => void;
-    questionText: string;
-    setQuestionText: (text: string) => void;
-    correctAnswer: string;
-    setCorrectAnswer: (answer: string) => void;
+    question: any;
+    setQuestion: React.Dispatch<React.SetStateAction<any>>;
 }) {
+    const handleCorrectAnswerChange = (index: number, value: string) => {
+        const newCorrectAnswers = [...question.correctAnswers];
+        newCorrectAnswers[index] = value;
+        setQuestion((prev: any) => ({ ...prev, correctAnswers: newCorrectAnswers }));
+        console.log(question.correctAnswers);
+    };
+
+    const addCorrectAnswer = () => {
+        setQuestion((prev: any) => ({ ...prev, correctAnswers: [...prev.correctAnswers, ''] }));
+    };
+
+    const removeCorrectAnswer = (index: number) => {
+        const newCorrectAnswers = question.correctAnswers.filter((_: any, i: number) => i !== index);
+        setQuestion((prev: any) => ({ ...prev, correctAnswers: newCorrectAnswers }));
+    };
+
     return (
         <div>
             <div className="mb-3">
@@ -27,17 +33,16 @@ export default function FillInTheBlanks({
                     id="points"
                     type="number"
                     className="form-control"
-                    value={points}
-                    onChange={(e) => setPoints(Number(e.target.value))}
+                    value={question.points}
+                    onChange={(e) => setQuestion((prev: any) => ({ ...prev, points: Number(e.target.value) }))}
                 />
             </div>
             <div className="mb-3">
                 <label htmlFor="question-text" className="form-label">Question</label>
-                <textarea
+                <ReactQuill
                     id="question-text"
-                    className="form-control"
-                    value={questionText}
-                    onChange={(e) => setQuestionText(e.target.value)}
+                    value={question.text}
+                    onChange={(value) => setQuestion((prev: any) => ({ ...prev, text: value }))}
                 />
             </div>
             <div className="mb-3">
@@ -46,8 +51,8 @@ export default function FillInTheBlanks({
                     id="correct-answer"
                     type="text"
                     className="form-control"
-                    value={correctAnswer}
-                    onChange={(e) => setCorrectAnswer(e.target.value)}
+                    value={question.correctAnswer}
+                    onChange={(e) => setQuestion((prev: any) => ({ ...prev, correctAnswer: e.target.value }))}
                 />
             </div>
         </div>

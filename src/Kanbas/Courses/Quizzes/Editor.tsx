@@ -12,6 +12,7 @@ import { addQuiz, updateQuiz } from "./reducer";
 import { Tabs, Tab } from "react-bootstrap";
 // import { on } from "events";
 import QuestionControl from "./QuestionControl";
+import ReactQuill from "react-quill";
 
 
 export default function QuiZEditor() {
@@ -21,13 +22,10 @@ export default function QuiZEditor() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    console.log("quizzes", quizzes);
-    console.log("qid", qid);
     const isEditing = quizzes.some((quiz: any) => quiz._id === qid);
 
     const fetchQuiz = async () => {
         const quiz = await quizClient.findQuizById(qid);
-        console.log("quiz", quiz);
         setQuiz(quiz);
     }
 
@@ -97,12 +95,9 @@ export default function QuiZEditor() {
                         <div className="form-control mb-3 justify-content-end align-items-center" style={{ height: "auto", padding: "15px", fontSize: "16px" }}>
                             <span>Quiz Instructions</span>
                             <br /><br />
-                            <textarea
-                                name="Instructions"
-                                value={quiz.instructions}
-                                className="form-control"
-                                placeholder="Quiz Instruction"
-                                onChange={(e) => setQuiz((prev) => ({ ...prev, instructions: e.target.value }))}
+                            <ReactQuill
+                            value={quiz.instructions}
+                            onChange={(value) => setQuiz((prev) => ({ ...prev, instructions: value }))}
                             />
                         </div>
 

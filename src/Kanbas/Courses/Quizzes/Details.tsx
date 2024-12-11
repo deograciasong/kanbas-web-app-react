@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import * as quizClient from "./client";
 import DetailsControlButtons from "./DetailsControlButtons";
+import { useSelector } from "react-redux";
 
 export default function QuizDetails() {
     const { qid } = useParams();
+    const navigate = useNavigate();
     const [quiz, setQuiz] = useState<any>(null);
+    const {currentUser} = useSelector((state: any) => state.accountReducer);
 
 
     const fetchQuiz = async () => {
@@ -22,10 +25,19 @@ export default function QuizDetails() {
         return <div>Quiz not found</div>;
     }
 
+    const handleTakeQuiz = () => {
+        navigate(`/Kanbas/Courses/${quiz.course}/Quizzes/${qid}/takeQuiz`);
+    };
+
     return (
         <div className="container">
-            <DetailsControlButtons />
-            <h1>{quiz.title}</h1>
+            {currentUser.role === 'FACULTY' && <DetailsControlButtons />}
+            <div className="d-flex justify-content-between align-items-center">
+                <h1>{quiz.title}</h1>
+                {currentUser.role === 'STUDENT' && (
+                    <button className="btn btn-danger" onClick={handleTakeQuiz}>Take Quiz</button>
+                )}
+            </div>
             <div className="mb-4">
                 <div className="row mb-2">
                     <div className="col text-end">

@@ -6,7 +6,7 @@ const questionSlice = createSlice({
     name: "questions",
     initialState,
     reducers: {
-      setQuestion: (state, action) => {
+      setQuestions: (state, action) => {
         state.questions = action.payload;
       },  
       addQuestion: (state, { payload: question }) => {
@@ -30,6 +30,6 @@ const questionSlice = createSlice({
       },
     },
   });
-  export const { addQuestion, deleteQuestion, updateQuestion, setQuestion } =
+  export const { addQuestion, deleteQuestion, updateQuestion, setQuestions } =
     questionSlice.actions;
   export default questionSlice.reducer;

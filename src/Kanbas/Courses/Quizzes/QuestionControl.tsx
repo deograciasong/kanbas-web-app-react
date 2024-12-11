@@ -4,32 +4,29 @@ import { LiaThermometerThreeQuartersSolid } from 'react-icons/lia';
 import { Link, useParams } from 'react-router-dom';
 import * as quizClient from './client';
 import { useDispatch, useSelector } from 'react-redux';
-import { setQuestion, addQuestion, deleteQuestion, updateQuestion } from './questionReducer';
+import { setQuestions, addQuestion, deleteQuestion, updateQuestion } from './questionReducer';
 
 export default function QuestionControl() {
     const { cid, qid } = useParams();
     const newQuestionId = new Date().getTime().toString();
     const [questionName, setQuestionName] = useState("");
     const [quiz, setQuiz] = useState({
-        questions: [
-            { id: 1, title: 'Question 1', type: 'True/False', text: 'Is the sky blue?', choices: ['True', 'False'], points: 5 },
-            { id: 2, title: 'Question 2', type: 'Multiple Choice', text: 'What is 2 + 2?', choices: ['3', '4', '5'], points: 10 },
-            // Add more questions as needed
-        ]
     });
 
     const { questions } = useSelector((state: any) => state.questionReducer);
     const dispatch = useDispatch();
 
+    console.log("questions", questions);
+
     const fetchQuestions = async () => {
+        console.log("qid", qid);
         const Questions = await quizClient.findQuestionsForQuiz(qid as string);
-        dispatch(setQuestion(Questions));
+        console.log("fetched Questions", Questions);
+        dispatch(setQuestions(Questions));
     };
     useEffect(() => {
         fetchQuestions();
     }, []);
-    console.log("qid:", qid);
-    console.log("questions:", questions);
 
     const createQuestionForQuiz = async () => {
         if (!qid) return;
@@ -42,24 +39,22 @@ export default function QuestionControl() {
         await quizClient.deleteQuestion(qid, questionId);
         dispatch(deleteQuestion(questionId));
     };
+    console.log("qid", qid);
+
+    const initialQuestion = {
+        _id: newQuestionId,
+        title: "",
+        quiz: qid,
+        points: 0,
+        choices: [],
+        type: "Multiple Choice",
+        correctAnswers: "",
+        text: "",
+    }
+    const [question, setQuestion] = useState(initialQuestion);
 
 
-    const handleDelete = (id: number) => {
-        setQuiz((prevQuiz) => ({
-            ...prevQuiz,
-            questions: prevQuiz.questions.filter((question) => question.id !== id)
-        }));
-    };
-
-    const handleSave = () => {
-        // Logic to save the quiz
-        console.log('Quiz saved:', quiz);
-    };
-
-    const handleCancel = () => {
-        // Logic to cancel the operation
-        console.log('Operation cancelled');
-    };
+    
 
     return (
         <div className="container">
@@ -70,16 +65,16 @@ export default function QuestionControl() {
                 </Link>
             </div>            <br /><hr />
             <div>
-                {quiz.questions.map((question) => (
-                    <div key={question.id} className="card mb-3">
+                {questions.map((question: any) => (
+                    <div key={question._id} className="card mb-3">
                         <div className="card-body">
                             <div className="d-flex justify-content-between align-items-center">
                                 <h5 className="card-title"><strong>{question.title}</strong></h5>
                                 <div>
-                                    <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/questions/${question.id}`}>
+                                    <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/questions/${question._id}`}>
                                         <button className="btn btn-secondary me-2">Edit</button>
                                     </Link>
-                                    <button className="btn btn-danger" onClick={() => handleDelete(question.id)}>Delete</button>
+                                    <button className="btn btn-danger" onClick={() => removeQuestion(question.quiz, question._id)}>Delete</button>
                                 </div>
                             </div>
                             <p className="card-text"><strong>Question:</strong> {question.text}</p>

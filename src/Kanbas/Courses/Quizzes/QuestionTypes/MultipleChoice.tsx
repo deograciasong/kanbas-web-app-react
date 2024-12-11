@@ -1,77 +1,56 @@
 import React from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default function MultipleChoice({
-    questionTitle,
-    setQuestionTitle,
-    points,
-    setPoints,
-    questionText,
-    setQuestionText,
-    correctAnswer,
-    setCorrectAnswer,
-    options,
-    setOptions
+    question,
+    setQuestion
 }: {
-    questionTitle: string;
-    setQuestionTitle: (title: string) => void;
-    points: number;
-    setPoints: (points: number) => void;
-    questionText: string;
-    setQuestionText: (text: string) => void;
-    correctAnswer: string;
-    setCorrectAnswer: (answer: string) => void;
-    options: string[];
-    setOptions: (options: string[]) => void;
+    question: any;
+    setQuestion: React.Dispatch<React.SetStateAction<any>>;
 }) {
     const handleOptionChange = (index: number, value: string) => {
-        const newOptions = [...options];
+        const newOptions = [...question.choices];
         newOptions[index] = value;
-        setOptions(newOptions);
+        setQuestion((prev: any) => ({ ...prev, choices: newOptions }));
     };
 
     const addOption = () => {
-        setOptions([...options, '']);
+        setQuestion((prev: any) => ({ ...prev, choices: [...prev.choices, ''] }));
     };
 
     const removeOption = (index: number) => {
-        const newOptions = options.filter((_, i) => i !== index);
-        setOptions(newOptions);
+        const newOptions = question.choices.filter((_: any, i: any) => i !== index);
+        setQuestion((prev: any) => ({ ...prev, choices: newOptions }));
+    };
+
+    const handleCorrectAnswerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setQuestion((prev: any) => ({ ...prev, correctAnswer: e.target.value }));
     };
 
     return (
         <div>
-            <div className="mb-3">
-                <label htmlFor="question-title" className="form-label">Title</label>
-                <input
-                    id="question-title"
-                    type="text"
-                    className="form-control"
-                    value={questionTitle}
-                    onChange={(e) => setQuestionTitle(e.target.value)}
-                />
-            </div>
             <div className="mb-3">
                 <label htmlFor="points" className="form-label">Points</label>
                 <input
                     id="points"
                     type="number"
                     className="form-control"
-                    value={points}
-                    onChange={(e) => setPoints(Number(e.target.value))}
+                    value={question.points}
+                    onChange={(e) => setQuestion((prev: any) => ({ ...prev, points: Number(e.target.value) }))}
                 />
             </div>
             <div className="mb-3">
                 <label htmlFor="question-text" className="form-label">Question</label>
-                <textarea
+                <ReactQuill
                     id="question-text"
-                    className="form-control"
-                    value={questionText}
-                    onChange={(e) => setQuestionText(e.target.value)}
+                    value={question.text}
+                    onChange={(value) => setQuestion((prev: any) => ({ ...prev, text: value }))}
                 />
             </div>
             <div className="mb-3">
-                <label className="form-label me-2">Options</label>
-                {options.map((option, index) => (
+                <label className="form-label">Options</label>
+                {question.choices.map((option: string, index: number) => (
                     <div key={index} className="input-group mb-2">
                         <input
                             type="text"
@@ -84,15 +63,16 @@ export default function MultipleChoice({
                 ))}
                 <button className="btn btn-secondary" onClick={addOption}>Add Option</button>
             </div>
-            <div className="mb-3">  
+            <div className="mb-3">
                 <label htmlFor="correct-answer" className="form-label">Correct Answer</label>
                 <select
                     id="correct-answer"
                     className="form-control"
-                    value={correctAnswer}
-                    onChange={(e) => setCorrectAnswer(e.target.value)}
+                    value={question.correctAnswer}
+                    onChange={handleCorrectAnswerChange}
                 >
-                    {options.map((option, index) => (
+                    <option value="">Select Correct Answer</option>
+                    {question.choices.map((option: string, index: number) => (
                         <option key={index} value={option}>{option}</option>
                     ))}
                 </select>

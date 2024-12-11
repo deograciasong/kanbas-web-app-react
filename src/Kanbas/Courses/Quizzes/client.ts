@@ -31,18 +31,31 @@ export const createQuestionForQuiz = async (quizId: any, question: any) => {
   return response.data;
 };
 
+
 export const deleteQuestion = async (qid: String, questionId: string) => {
   const response = await axiosWithCredentials.delete(`${QUIZ_API}/${qid}/questions/${questionId}`);
   return response.data;
  };
 
- export const updateQuestion = async (quiz: any, question: any) => {
-  const { data } = await axiosWithCredentials.put(`${QUIZ_API}/${quiz._id}/question/${question._id}`, question);
+ export const updateQuestion = async (qid: any, question: any) => {
+  const { data } = await axiosWithCredentials.put(`${QUIZ_API}/${qid}/questions/${question._id}`, question);
   return data;
 };
 export const findQuestionById = async (questionId: any, qid: any) => {
   const { data } = await axiosWithCredentials.get(`${QUIZ_API}/${qid}/questions/${questionId}`);
   return data;
 };
+
+
+// Results
+export const findResultsForQuiz = async (quizId: string) => {
+  const response = await axiosWithCredentials.get(`${QUIZ_API}/${quizId}/results`);
+  return response.data;
+};
+
+// export const findResultById = async (result: any) => {
+//   const response = await axiosWithCredentials.get(`${QUIZ_API}/${result.quiz}/results/${resultId}`);
+//   return response.data;
+// }
 
   

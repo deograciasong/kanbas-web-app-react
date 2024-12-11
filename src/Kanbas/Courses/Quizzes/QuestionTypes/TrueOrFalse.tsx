@@ -1,73 +1,63 @@
-import { useState } from "react";
+import React from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default function TrueOrFalse({
-    questionTitle,
-    setQuestionTitle,
-    points,
-    setPoints,
-    questionText,
-    setQuestionText,
-    correctAnswer,
-    setCorrectAnswer
+    question,
+    setQuestion
 }: {
-    questionTitle: string;
-    setQuestionTitle: (title: string) => void;
-    points: number;
-    setPoints: (points: number) => void;
-    questionText: string;
-    setQuestionText: (text: string) => void;
-    correctAnswer: string;
-    setCorrectAnswer: (answer: string) => void;
+    question: any;
+    setQuestion: React.Dispatch<React.SetStateAction<any>>;
 }) {
     return (
-    <div>
-                    <div className="mb-3">
-                        <label htmlFor="points" className="form-label">Points</label>
+        <div>
+            <div className="mb-3">
+                <label htmlFor="points" className="form-label">Points</label>
+                <input
+                    id="points"
+                    type="number"
+                    className="form-control"
+                    value={question.points}
+                    onChange={(e) => setQuestion((prev: any) => ({ ...prev, points: Number(e.target.value) }))}
+                />
+            </div>
+            <div className="mb-3">
+                <label htmlFor="question-text" className="form-label">Question</label>
+                <ReactQuill
+                    id="question-text"
+                    value={question.text}
+                    onChange={(value) => setQuestion((prev: any) => ({ ...prev, text: value }))}
+                />
+            </div>
+            <div className="mb-3">
+                <label className="form-label">Correct Answer</label>
+                <div>
+                    <div className="form-check form-check-inline">
                         <input
-                            id="points"
-                            type="number"
-                            className="form-control"
-                            value={points}
-                            onChange={(e) => setPoints(Number(e.target.value))}
+                            className="form-check-input"
+                            type="radio"
+                            name="correctAnswer"
+                            id="true"
+                            value="True"
+                            checked={question.correctAnswer === 'True'}
+                            onChange={(e) => setQuestion((prev: any) => ({ ...prev, correctAnswer: e.target.value }))}
                         />
+                        <label className="form-check-label" htmlFor="true">True</label>
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="question-text" className="form-label">Question</label>
-                        <textarea
-                            id="question-text"
-                            className="form-control"
-                            value={questionText}
-                            onChange={(e) => setQuestionText(e.target.value)}
+                    <div className="form-check form-check-inline">
+                        <input
+                            className="form-check-input"
+                            type="radio"
+                            name="correctAnswer"
+                            id="false"
+                            value="False"
+                            checked={question.correctAnswer === 'False'}
+                            onChange={(e) => setQuestion((prev: any) => ({ ...prev, correctAnswer: e.target.value }))}
                         />
-                    </div>
-                    <div className="mb-3">
-                        <label className="form-label">Correct Answer</label>
-                        <div>
-                            <div className="form-check form-check-inline">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="correctAnswer"
-                                    id="true"
-                                    value="True"
-                                    checked={correctAnswer === 'True'}
-                                    onChange={(e) => setCorrectAnswer(e.target.value)}
-                                />
-                                <label className="form-check-label" htmlFor="true">True</label>
-                            </div>
-                            <div className="form-check form-check-inline">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="correctAnswer"
-                                    id="false"
-                                    value="False"
-                                    checked={correctAnswer === 'False'}
-                                    onChange={(e) => setCorrectAnswer(e.target.value)}
-                                />
-                                <label className="form-check-label" htmlFor="false">False</label>
-                            </div>
-                        </div>
+                        <label className="form-check-label" htmlFor="false">False</label>
                     </div>
                 </div>
-                );}
+            </div>
+        </div>
+    );
+}

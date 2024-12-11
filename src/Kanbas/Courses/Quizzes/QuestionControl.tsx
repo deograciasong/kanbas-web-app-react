@@ -13,16 +13,16 @@ export default function QuestionControl() {
     const [quiz, setQuiz] = useState({
     });
 
-    const { questions } = useSelector((state: any) => state.questionReducer);
+    const [questions, setQuestions] = useState<any[]>([]);
     const dispatch = useDispatch();
 
     console.log("questions", questions);
 
     const fetchQuestions = async () => {
-        console.log("qid", qid);
-        const Questions = await quizClient.findQuestionsForQuiz(qid as string);
-        console.log("fetched Questions", Questions);
-        dispatch(setQuestions(Questions));
+        console.log("error:", qid);
+        const fetchedQuestions = await quizClient.findQuestionsForQuiz(qid as string);
+        console.log("fetchedQuestions", fetchedQuestions);
+        setQuestions(fetchedQuestions);
     };
     useEffect(() => {
         fetchQuestions();
@@ -54,7 +54,7 @@ export default function QuestionControl() {
     const [question, setQuestion] = useState(initialQuestion);
 
 
-    
+
 
     return (
         <div className="container">

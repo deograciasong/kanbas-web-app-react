@@ -3,12 +3,14 @@ import { TbSearch } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
 import { IoEllipsisVertical } from "react-icons/io5";
+import mongoose from 'mongoose';
+
 
 export default function QuizControl(
   { quizName, setQuizName, addQuiz }:
   { quizName: string; setQuizName: (title: string) => void; addQuiz: () => void; }) {
   const { cid } = useParams();
-  const newQuizId = new Date().getTime().toString();
+  const newQuizId = new mongoose.Types.ObjectId().toString();
   return (
     <div id="wd-quiz-controls" className="container d-flex justify-content-between align-items-center">
       <div className="position-relative" style={{ maxWidth: "300px" }}>

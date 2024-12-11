@@ -25,6 +25,7 @@ export default function TakeQuiz() {
     useEffect(() => {
         const fetchQuestions = async () => {
             try {
+                console.log('No Error', qid);
                 const fetchedQuestions = await quizClient.findQuestionsForQuiz(qid as string);
                 setQuestions(fetchedQuestions);
                 setAnswers(new Array(fetchedQuestions.length).fill(''));

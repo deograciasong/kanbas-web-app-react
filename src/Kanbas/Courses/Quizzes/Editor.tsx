@@ -381,7 +381,7 @@ export default function QuiZEditor() {
                 </Tab>
                 <Tab eventKey="questions" title="Questions">
                     <div className="mt-3">
-                        <QuestionControl />
+                        <QuestionControl/>
                     </div>
                 </Tab>
             </Tabs>
